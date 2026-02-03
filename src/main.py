@@ -1,5 +1,4 @@
-from view.menu import KesherMenu
+from core.entry import cli
 
 if __name__ == "__main__":
-    app = KesherMenu()
-    app.run()
+    cli()
