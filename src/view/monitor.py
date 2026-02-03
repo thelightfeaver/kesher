@@ -15,3 +15,7 @@ class KesherMenu(App):
     def compose(self):
         yield HeaderWidget()
         yield FooterWidget()
+
+    def on_mount(self) -> None:
+        self.title = "Kesher - Process Manager"
+        self.sub_title = "Monitoring Application Processes"
