@@ -1,20 +1,18 @@
-from py_compile import main
 import click
 from view.monitor import KesherMenu
+from .engine import start as start_app
 
 
 @click.group()
 def cli():
     pass
 
+
 @click.command()
 @click.argument("path", type=str)
-@click.option("-n", "--name", type=str, help="Name of the Kesher instance")
-def start(path, name):
-    if name:
-        click.echo(f"Starting Kesher engine '{name}'... {path}")
-    else:
-        click.echo(f"Starting Kesher engine... {path}")
+def start(path):
+    start_app(path)
+
 
 @click.command()
 @click.argument("id", type=str)
@@ -26,6 +24,7 @@ def stop(id):
 @click.argument("id", type=str)
 def status(id):
     click.echo(f"Status of Kesher engine with ID: {id}")
+
 
 @click.command()
 def monitor():
