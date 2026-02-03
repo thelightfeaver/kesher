@@ -12,9 +12,11 @@ __pycache__/
 # Distribution / packaging
 build/
 dist/
+app/
 
 # IDE files
 .vscode/
+
 
 # secret files
 ./issue.md
