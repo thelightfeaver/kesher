@@ -1,4 +1,5 @@
-
+from view.menu import KesherMenu
 
 if __name__ == "__main__":
-    print("Hello, Kesher!")
+    app = KesherMenu()
+    app.run()
