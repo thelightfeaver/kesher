@@ -19,5 +19,5 @@ app/
 .vscode/
 
 # secret files
-./issue.md
-./data.json
+issue.md
+data.json
