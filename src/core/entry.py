@@ -1,5 +1,7 @@
 import click
+
 from view.monitor import KesherMenu
+
 from .engine import start as start_app
 
 
