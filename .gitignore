@@ -8,3 +8,13 @@ ENV/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Distribution / packaging
+build/
+dist/
+
+# IDE files
+.vscode/
+
+# secret files
+./issue.md
