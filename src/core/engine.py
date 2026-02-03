@@ -12,7 +12,8 @@ def start(path: str) -> None:
                 os.system(f"python3 {path}")
             elif env.api_type == "django":
                 os.system(f"python3 {path} runserver")
-
+            elif env.api_type == "unknown":
+                os.system(f"python3 {path}")
             else:
                 print("API type is unknown. Cannot start the application.")
         else:
