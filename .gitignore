@@ -8,3 +8,16 @@ ENV/
 __pycache__/
 *.py[cod]
 *$py.class
+.ruff_cache/
+
+# Distribution / packaging
+build/
+dist/
+app/
+
+# IDE files
+.vscode/
+
+# secret files
+issue.md
+data.json
