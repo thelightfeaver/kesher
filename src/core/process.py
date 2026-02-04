@@ -71,8 +71,8 @@ class Process:
         print(f"Process started with PID: {process.pid} and Name: {temp_name}")
         return process
 
-    def terminate(self, pid: str) -> None:
-        """Terminate a process by its PID."""
+    def stop(self, pid: str) -> None:
+        """stop a process by its PID."""
         data = self._get_process_info(str(pid))
         if data is None:
             print(f"No process found with PID {pid}.")
@@ -90,7 +90,7 @@ class Process:
             print(f"No process found with PID {data['pid']}.")
         except psutil.TimeoutExpired:
             print(
-                f"Process with PID {data['pid']} did not terminate in time; killing it."
+                f"Process with PID {data['pid']} did not stop in time; killing it."
             )
             proc.kill()
             if str(data['pid']) in self.info_process:
@@ -149,13 +149,13 @@ class Process:
         log_folder = os.path.join(".logs")
         os.makedirs(log_folder, exist_ok=True)
 
-    def terminate_all_processes(self):
-        """Terminate all running processes tracked in info_process."""
+    def stop_all(self):
+        """stop all running processes tracked in info_process."""
         if self.info_process:
             for pid in list(self.info_process.keys()):
-                self.terminate(int(pid))
+                self.stop(int(pid))
         else:
-            print("There are no processes to terminate.")
+            print("There are no processes to stop.")
 
     def log(self, id: str) -> None:
         """Retrieve and print the log of a specific process by its PID.

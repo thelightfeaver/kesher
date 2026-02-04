@@ -41,9 +41,9 @@ def start(file_path: str, name=str | None, auto_start=False) -> None:
 
 def stop(id: str) -> None:
     if "all" == id.lower():
-        Process().terminate_all_processes()
+        Process().stop_all()
     else:
-        Process().terminate(id)
+        Process().stop(id)
 
 
 def restart(id: str) -> None:
