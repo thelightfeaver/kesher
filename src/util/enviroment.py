@@ -12,7 +12,7 @@ class Environment:
     ]
 
     def __init__(self, path: str) -> None:
-        self.venv_path = self._is_enviroments_exists()
+        self.venv_path = self._get_enviroments_exists()
         self.api_type = self._determine_technology(path)
         self._save_data()
 
@@ -21,7 +21,7 @@ class Environment:
         with open("data.json", "w") as f:
             json.dump(data, f, indent=4)
 
-    def _is_enviroments_exists(self) -> bool:
+    def _get_enviroments_exists(self) -> bool:
         for env in self.ENVS:
             cwd = os.getcwd()
             full_path = os.path.join(cwd, env)
