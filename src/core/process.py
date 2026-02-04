@@ -114,7 +114,7 @@ class Process:
         Args:
             pid (int): The PID of the process to retrieve information for.
         """
-        data = self._get_process_info(pid)
+        data = self.info_process if pid == "all" else self._get_process_info(pid)
         if data is None:
             print(f"No process found with PID {pid}.")
             return
