@@ -8,6 +8,7 @@ from .engine import log as log_app
 from .engine import start as start_app
 from .engine import status as status_app
 from .engine import stop as stop_app
+from .engine import restart as restart_app
 
 
 @click.group()
@@ -28,6 +29,12 @@ def start(path, name, auto_start):
 def stop(id):
     stop_app(id)
 
+@click.command()
+@click.argument("id", type=str)
+def restart(id):
+    restart_app(id)
+
+
 
 @click.command()
 @click.argument("id", type=str)
@@ -44,6 +51,9 @@ def log(id):
 @click.command()
 def monitor():
     KesherMenu().run()
+
+
+
 
 
 cli.add_command(start)
