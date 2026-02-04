@@ -25,3 +25,7 @@ def start(file_path: str) -> None:
             print("No virtual environment found in the specified file_path.")
     else:
         print("Please provide a valid path to start the application.")
+
+def stop(id: str) -> None:
+    pid = int(id)
+    Process().terminate(pid)
