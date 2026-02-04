@@ -5,31 +5,33 @@ import sys
 
 class Environment:
     ENVS = [
-        "./venv",
-        "./.venv",
-        "./env",
+        "venv/bin/python",
+        "venv/bin/python3",
+        ".venv/bin/python3",
+        ".venv/bin/python",
     ]
 
-    def __init__(self, path: str) -> None:
-        self.is_env = self._is_enviroments_exists()
-        self.api_type = self._determine_technology(path)
+    def __init__(self, file_path: str) -> None:
+        self.venv_path = self._get_enviroments_exists()
+        self.api_type = self._determine_technology(file_path)
         self._save_data()
 
     def _save_data(self) -> None:
-        data = {"environments": self.is_env, "api_type": self.api_type}
+        data = {"venv_path": self.venv_path, "api_type": self.api_type}
         with open("data.json", "w") as f:
             json.dump(data, f, indent=4)
 
-    def _is_enviroments_exists(self) -> bool:
+    def _get_enviroments_exists(self) -> bool:
         for env in self.ENVS:
             cwd = os.getcwd()
             full_path = os.path.join(cwd, env)
             if os.path.exists(full_path):
-                return True
-        return False
+                return full_path
 
-    def _determine_technology(self, path: str) -> str:
-        with open(path, "r") as f:
+        return sys.executable
+
+    def _determine_technology(self, file_path: str) -> str:
+        with open(file_path, "r") as f:
             lines = f.read().lower()
             if "fastapi" in lines:
                 return "fastapi"
