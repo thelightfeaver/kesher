@@ -113,15 +113,13 @@ class Process:
         self._save_data()
 
     def get_process_info(self, pid: str) -> None:
-        """Get information about a specific process by its PID.
+        """Get information about a specific process by its PID or name.
         Args:
-            pid (int): The PID of the process to retrieve information for.
-        Returns:
-            dict | None: A dictionary containing process information or None if not found.
+            pid (str): The PID or name of the process to retrieve information for.
         """
         data = self._get_process_info(pid)
         if data is None:
-            print(f"No process found with PID {pid}.")
+            print(f"No process found with PID or name '{pid}'.")
             return
 
         console = Console()
@@ -136,16 +134,15 @@ class Process:
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
 
-        for pid, info in self.info_process.items():
-            status_color = "green" if info["status"] == "running" else "red"
-            table.add_row(
-                pid,
-                info["name"],
-                f"[{status_color}]{info['status']}[/{status_color}]",
-                "✓" if info["auto_start"] else "✗",
-                " ".join(info["commands"]),
-                str(info["size"]),
-            )
+        status_color = "green" if data["status"] == "running" else "red"
+        table.add_row(
+            str(data["pid"]),
+            data["name"],
+            f"[{status_color}]{data['status']}[/{status_color}]",
+            "✓" if data["auto_start"] else "✗",
+            " ".join(data["commands"]),
+            str(data["size"]),
+        )
 
         console.print(table)
 
