@@ -1,7 +1,7 @@
 """Module for managing system processes."""
 
-import os
 import json
+import os
 import subprocess
 
 import psutil
@@ -17,7 +17,7 @@ class Process:
             with open("process.json", "r") as f:
                 return json.load(f)
         return {}
-    
+
     def _save_data(self) -> None:
         """Save process information to data.json file."""
         with open("process.json", "w") as f:
@@ -34,9 +34,7 @@ class Process:
                 cwd=".",
             )
 
-        data ={"pid": process.pid, 
-               "commands": commands,
-               "status": "running"}
+        data = {"pid": process.pid, "commands": commands, "status": "running"}
         self.info_process[str(process.pid)] = data
         self._save_data()
 
