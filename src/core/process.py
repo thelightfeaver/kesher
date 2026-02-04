@@ -192,6 +192,6 @@ class Process:
             if key == pid or value["name"] == pid:
                 return value
         return None
-    
+
     def restart(self, id: str) -> None:
         pass

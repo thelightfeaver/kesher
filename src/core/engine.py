@@ -45,11 +45,14 @@ def stop(id: str) -> None:
     else:
         Process().terminate(id)
 
+
 def restart(id: str) -> None:
     Process().restart(id)
 
+
 def status(id: str) -> None:
     Process().get_process_info(id)
+
 
 def log(id: str) -> None:
     print(Process().log(id))
