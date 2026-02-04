@@ -1,3 +1,5 @@
+"""Entry point for the Kesher application."""
+
 import click
 
 from view.monitor import KesherMenu
