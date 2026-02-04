@@ -3,7 +3,7 @@ from util.enviroment import Environment
 from .process import Process
 
 
-def start(file_path: str, name=str | None, auto_start=False) -> None:
+def start(file_path: str, name: str | None = None, auto_start: bool = False) -> None:
     if file_path:
         env = Environment(file_path)
         if env.venv_path:
