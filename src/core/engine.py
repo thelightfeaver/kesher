@@ -6,7 +6,7 @@ from util.enviroment import Environment
 def start(path: str) -> None:
     if path:
         env = Environment(path)
-        if env.is_env:
+        if env.venv_path:
             if env.api_type == "fastapi":
                 os.system(f"fastapi run {path}")
             elif env.api_type == "flask":
