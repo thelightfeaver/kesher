@@ -21,7 +21,7 @@ class Environment:
         with open("data.json", "w") as f:
             json.dump(data, f, indent=4)
 
-    def _get_enviroments_exists(self) -> bool:
+    def _get_enviroments_exists(self) -> str:
         for env in self.ENVS:
             cwd = os.getcwd()
             full_path = os.path.join(cwd, env)
