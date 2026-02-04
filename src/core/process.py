@@ -5,6 +5,7 @@ import os
 import subprocess
 
 import psutil
+from faker import Faker
 
 
 class Process:
@@ -24,7 +25,7 @@ class Process:
         with open("process.json", "w") as f:
             json.dump(self.info_process, f, indent=4)
 
-    def execute(self, commands: list[str]) -> subprocess.Popen:
+    def execute(self, commands: list[str], name = None) -> subprocess.Popen:
         """Execute a system command and return the running process."""
         with open("process.log", "a") as log:
             process = subprocess.Popen(
@@ -37,6 +38,7 @@ class Process:
 
         data = {
             "pid": process.pid,
+            "name": name if name else Faker().word() + str(Faker().random_number(digits=5, fix_len=True)),
             "size": psutil.Process(process.pid).memory_info().rss,
             "commands": commands,
             "status": "running",
