@@ -107,8 +107,6 @@ class Process:
                     info["status"] = "running"
                 else:
                     info["status"] = "stopped"
-            else:
-                del self.info_process[pid_str]
         self._save_data()
 
     def get_process_info(self, pid: str) -> None:
