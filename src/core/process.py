@@ -26,9 +26,22 @@ class Process:
         with open("process.json", "w") as f:
             json.dump(self.info_process, f, indent=4)
 
-    def execute(self, commands: list[str], name = None, auto_start=False) -> subprocess.Popen:
-        """Execute a system command and return the running process."""
-        temp_name = name if name else Faker().word() + str(Faker().random_number(digits=5, fix_len=True))
+    def execute(
+        self, commands: list[str], name=str | None, auto_start=False
+    ) -> subprocess.Popen:
+        """Execute a system command and return the running process.
+        Args:
+            commands (list[str]): The command and its arguments to execute.
+            name (str | None): Optional name for the process.
+            auto_start (bool): Flag to enable auto-start for the process.
+        Returns:
+            subprocess.Popen: The running process object.
+        """
+        temp_name = (
+            name
+            if name
+            else Faker().word() + str(Faker().random_number(digits=5, fix_len=True))
+        )
         with open(f".logs/{temp_name}.log", "a") as log:
             process = subprocess.Popen(
                 commands,
@@ -51,26 +64,33 @@ class Process:
         self.info_process[str(process.pid)] = data
         self._save_data()
 
-        print(f"Process started with PID: {process.pid}")
+        print(f"Process started with PID: {process.pid} and Name: {temp_name}")
         return process
 
-    def terminate(self, pid: int) -> None:
+    def terminate(self, pid: str) -> None:
         """Terminate a process by its PID."""
+        data = self._get_process_info(str(pid))
+        if data is None:
+            print(f"No process found with PID {pid}.")
+            return
+
         try:
-            proc = psutil.Process(pid)
+            proc = psutil.Process(data["pid"])
             proc.terminate()
             proc.wait(timeout=3)
-            print(f"Process with PID {pid} has been terminated.")
-            if str(pid) in self.info_process:
-                self.info_process[str(pid)]["status"] = "terminated"
+            print(f"Process with PID {data['pid']} has been terminated.")
+            if pid in self.info_process:
+                self.info_process[pid]["status"] = "terminated"
                 self._save_data()
         except psutil.NoSuchProcess:
-            print(f"No process found with PID {pid}.")
+            print(f"No process found with PID {data['pid']}.")
         except psutil.TimeoutExpired:
-            print(f"Process with PID {pid} did not terminate in time; killing it.")
+            print(
+                f"Process with PID {data['pid']} did not terminate in time; killing it."
+            )
             proc.kill()
-            if str(pid) in self.info_process:
-                self.info_process[str(pid)]["status"] = "terminated"
+            if pid in self.info_process:
+                self.info_process[pid]["status"] = "terminated"
                 self._save_data()
 
     def _update_info_process(self) -> None:
@@ -87,15 +107,29 @@ class Process:
                 del self.info_process[pid_str]
         self._save_data()
 
-    def get_process_info(self, pid: int) -> dict | None:
-        """Get information about a specific process by its PID."""
-        data = self.info_process.get(str(pid), "Not Found PID")
+    def get_process_info(self, pid: str) -> dict | None:
+        """Get information about a specific process by its PID.
+        Args:
+            pid (int): The PID of the process to retrieve information for.
+        Returns:
+            dict | None: A dictionary containing process information or None if not found.
+        """
+        data = self._get_process_info(pid)
+        if data is None:
+            print(f"No process found with PID {pid}.")
+            return None
+
         return (
             "PID: "
             + str(pid)
             + " \n"
             + "Status: "
             + data["status"]
+            + "Name: "
+            + data["name"]
+            + " \n"
+            + "Auto Start: "
+            + str(data["auto_start"])
             + " \n"
             + "Commands: "
             + " ".join(data["commands"])
@@ -115,4 +149,37 @@ class Process:
                 pid = int(pid_str)
                 self.terminate(pid)
         else:
-            print("There are no processes to terminate.") 
+            print("There are no processes to terminate.")
+
+    def log(self, id: str) -> None:
+        """Retrieve and print the log of a specific process by its PID.
+        Args:
+            id (str): The PID of the process whose log is to be retrieved.
+        """
+        process_info = self._get_process_info(id)
+        if process_info is None:
+            print(f"No process found with PID {id}.")
+            return
+
+        if process_info:
+            log_path = process_info.get("log")
+            if log_path and os.path.exists(log_path):
+                with open(log_path, "r") as log_file:
+                    print(log_file.read().replace("None", ""))
+            else:
+                print(f"No log file found for process with PID {id}.")
+        else:
+            print(f"No process found with PID {id}.")
+
+    def _get_process_info(self, pid: str) -> dict | None:
+        """Get information about a specific process by its PID.
+        Args:
+            pid (int): The PID of the process to retrieve information for.
+        Returns:
+            dict | None: A dictionary containing process information or None if not found.
+        """
+
+        for key, value in self.info_process.items():
+            if key == pid or value["name"] == pid:
+                return value
+        return None
