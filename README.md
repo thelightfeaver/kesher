@@ -30,19 +30,19 @@ Options:
 ### Stop a process
 
 ```bash
-kesher stop <id | name>
+kesher stop <id-or-name>
 ```
 
 ### Check process status
 
 ```bash
-kesher status <id | name>
+kesher status <id-or-name>
 ```
 
 ### View process logs
 
 ```bash
-kesher log <id | name>
+kesher log <id-or-name>
 ```
 
 ### Interactive monitor
