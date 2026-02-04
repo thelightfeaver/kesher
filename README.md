@@ -5,8 +5,6 @@
 - Monitor processes
 - Log management
 
-
-
 ## Scripts
 
 Start process
