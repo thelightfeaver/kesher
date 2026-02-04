@@ -55,8 +55,9 @@ class Process:
                 cwd=".",
             )
 
+        id = process.pid
         data = {
-            "pid": process.pid,
+            "pid": id,
             "host": os.uname().nodename,
             "name": temp_name,
             "log": f".logs/{temp_name}.log",
@@ -67,38 +68,38 @@ class Process:
             "commands": commands,
             "status": "running",
         }
-        self.info_process[str(process.pid)] = data
+        self.info_process[str(id)] = data
         self._save_data()
 
         print(f"Process started with PID: {process.pid} and Name: {temp_name}")
         return process
 
-    def stop(self, pid: str) -> None:
+    def stop(self, id: str) -> None:
         """
         stop a process by its PID.
         args:
-            pid (str): The PID of the process to stop.
+            id (str): The PID of the process to stop.
         """
-        data = self._get_process_info(str(pid))
+        data = self._get_process_info(str(id))
         if data is None:
-            print(f"No process found with PID {pid}.")
+            print(f"No process found with PID {id}.")
             return
-
+        pid = next(iter(data.values()))["pid"]
         try:
-            proc = psutil.Process(data["pid"])
+            proc = psutil.Process(pid)
             proc.terminate()
             proc.wait(timeout=3)
-            print(f"Process with PID {data['pid']} has been stopped.")
-            if str(data["pid"]) in self.info_process:
-                self.info_process[f"{data['pid']}"]["status"] = "stopped"
+            print(f"Process with PID {pid} has been stopped.")
+            if pid in self.info_process:
+                self.info_process[f"{pid}"]["status"] = "stopped"
                 self._save_data()
         except psutil.NoSuchProcess:
-            print(f"No process found with PID {data['pid']}.")
+            print(f"No process found with PID {pid}.")
         except psutil.TimeoutExpired:
-            print(f"Process with PID {data['pid']} did not stop in time; killing it.")
+            print(f"Process with PID {pid} did not stop in time; killing it.")
             proc.kill()
-            if str(data["pid"]) in self.info_process:
-                self.info_process[f"{data['pid']}"]["status"] = "stopped"
+            if pid in self.info_process:
+                self.info_process[f"{pid}"]["status"] = "stopped"
                 self._save_data()
 
     def _update_info_process(self) -> None:
@@ -113,15 +114,15 @@ class Process:
                     info["status"] = "stopped"
         self._save_data()
 
-    def status(self, pid: str) -> None:
+    def status(self, id: str) -> None:
         """
         Get information about a specific process by its PID.
         Args:
-            pid (str): The PID of the process to retrieve information for.
+            id (str): The PID of the process to retrieve information for.
         """
-        data = self.info_process if pid == "all" else self._get_process_info(pid)
+        data = self._get_process_info(id)
         if data is None:
-            print(f"No process found with PID {pid}.")
+            print(f"No process found with PID {id}.")
             return
 
         console = Console()
@@ -135,26 +136,15 @@ class Process:
         table.add_column("Auto Start", justify="center")
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
-        if pid == "all":
-            for pid, info in self.info_process.items():
-                status_color = "green" if info["status"] == "running" else "red"
-                table.add_row(
-                    pid,
-                    info["name"],
-                    f"[{status_color}]{info['status']}[/{status_color}]",
-                    "✓" if info["auto_start"] else "✗",
-                    " ".join(info["commands"]),
-                    str(info["size"]),
-                )
-        else:
-            status_color = "green" if data["status"] == "running" else "red"
+        for pid, info in data.items():
+            status_color = "green" if info["status"] == "running" else "red"
             table.add_row(
-                str(data["pid"]),
-                data["name"],
-                f"[{status_color}]{data['status']}[/{status_color}]",
-                "✓" if data["auto_start"] else "✗",
-                " ".join(data["commands"]),
-                str(data["size"]),
+                pid,
+                info["name"],
+                f"[{status_color}]{info['status']}[/{status_color}]",
+                "✓" if info["auto_start"] else "✗",
+                " ".join(info["commands"]),
+                str(info["size"]),
             )
 
         console.print(table)
@@ -194,18 +184,22 @@ class Process:
         else:
             print(f"No process found with PID {id}.")
 
-    def _get_process_info(self, pid: str) -> dict | None:
+    def _get_process_info(self, id: str) -> dict | None:
         """
         Get information about a specific process by its PID.
         Args:
-            pid (int): The PID of the process to retrieve information for.
+            id (str): The PID of the process to retrieve information for.
         Returns:
             dict | None: A dictionary containing process information or None if not found.
         """
+        
+        if id:
+            if id == "all":
+                return self.info_process.copy()
 
-        for key, value in self.info_process.items():
-            if key == pid or value["name"] == pid:
-                return value
+            for key, value in self.info_process.items():
+                if key == id or value["name"] == id:
+                    return dict({key: value})
         return None
 
     def restart(self, id: str) -> None:
@@ -217,21 +211,17 @@ class Process:
         Args:
             id (str): The PID of the process to delete.
         """
-        data = self.info_process if id == "all" else self._get_process_info(id)
-        if data is None:
+        data = self._get_process_info(id)
+        if data is None or data is {}:
             print(f"No process found with PID {id}.")
             return
 
-        if id == "all":
-            for pid in list(self.info_process.keys()):
-                if psutil.pid_exists(int(pid)):
-                    self.stop(pid)
-                del self.info_process[pid]
-                print(f"Process with PID {pid} has been deleted from records.")
+        if data:
+            for key, value in data.items() :
+                if psutil.pid_exists(int(key)):
+                    self.stop(key)
+                del self.info_process[key]
+                print(f"Process with PID {key} has been deleted from records.")
         else:
-            if str(data["pid"]) in self.info_process:
-                if psutil.pid_exists(data["pid"]):
-                    self.stop(str(data["pid"]))
-                del self.info_process[str(data["pid"])]
-                print(f"Process with PID {data['pid']} has been deleted from records.")
+            print("No process will be deleted")
         self._save_data()
