@@ -11,9 +11,9 @@ class Environment:
         ".venv/bin/python",
     ]
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, file_path: str) -> None:
         self.venv_path = self._get_enviroments_exists()
-        self.api_type = self._determine_technology(path)
+        self.api_type = self._determine_technology(file_path)
         self._save_data()
 
     def _save_data(self) -> None:
@@ -30,8 +30,8 @@ class Environment:
 
         return sys.executable
 
-    def _determine_technology(self, path: str) -> str:
-        with open(path, "r") as f:
+    def _determine_technology(self, file_path: str) -> str:
+        with open(file_path, "r") as f:
             lines = f.read().lower()
             if "fastapi" in lines:
                 return "fastapi"
