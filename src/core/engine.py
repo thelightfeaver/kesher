@@ -28,8 +28,11 @@ def start(file_path: str) -> None:
 
 
 def stop(id: str) -> None:
-    pid = int(id)
-    Process().terminate(pid)
+
+    if "all" == id.lower():
+        Process().terminate_all_processes()
+    else:   
+        Process().terminate(int(id))
 
 
 def status(id: str) -> None:

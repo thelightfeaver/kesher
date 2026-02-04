@@ -12,6 +12,7 @@ class Process:
     def __init__(self) -> None:
         self.info_process = self._load_data()
         self._update_info_process()
+        self._create_folder_log()
 
     def _load_data(self) -> dict:
         """Load process information from data.json file."""
@@ -25,9 +26,10 @@ class Process:
         with open("process.json", "w") as f:
             json.dump(self.info_process, f, indent=4)
 
-    def execute(self, commands: list[str], name = None) -> subprocess.Popen:
+    def execute(self, commands: list[str], name = None, auto_start=False) -> subprocess.Popen:
         """Execute a system command and return the running process."""
-        with open("process.log", "a") as log:
+        temp_name = name if name else Faker().word() + str(Faker().random_number(digits=5, fix_len=True))
+        with open(f".logs/{temp_name}.log", "a") as log:
             process = subprocess.Popen(
                 commands,
                 stdout=log,
@@ -39,7 +41,9 @@ class Process:
         data = {
             "pid": process.pid,
             "host": os.uname().nodename,
-            "name": name if name else Faker().word() + str(Faker().random_number(digits=5, fix_len=True)),
+            "name": temp_name,
+            "log": f".logs/{temp_name}.log",
+            "auto_start": auto_start,
             "size": psutil.Process(process.pid).memory_info().rss,
             "commands": commands,
             "status": "running",
@@ -98,3 +102,14 @@ class Process:
             if data != "Not Found PID"
             else data
         )
+
+    def _create_folder_log(self) -> None:
+        """Create a log folder for the process."""
+        log_folder = os.path.join(".logs")
+        os.makedirs(log_folder, exist_ok=True)
+
+    def terminate_all_processes(self):
+        """Terminate all running processes tracked in info_process."""
+        for pid_str in list(self.info_process.keys()):
+            pid = int(pid_str)
+            self.terminate(pid)
