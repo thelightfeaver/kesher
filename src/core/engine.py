@@ -30,3 +30,7 @@ def start(file_path: str) -> None:
 def stop(id: str) -> None:
     pid = int(id)
     Process().terminate(pid)
+
+
+def status(id: str) -> None:
+    print(Process().get_process_info(int(id)))

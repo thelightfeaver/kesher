@@ -5,6 +5,7 @@ import click
 from view.monitor import KesherMenu
 
 from .engine import start as start_app
+from .engine import status as status_app
 from .engine import stop as stop_app
 
 
@@ -28,7 +29,7 @@ def stop(id):
 @click.command()
 @click.argument("id", type=str)
 def status(id):
-    click.echo(f"Status of Kesher engine with ID: {id}")
+    status_app(id)
 
 
 @click.command()

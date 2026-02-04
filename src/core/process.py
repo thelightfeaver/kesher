@@ -10,6 +10,7 @@ import psutil
 class Process:
     def __init__(self) -> None:
         self.info_process = self._load_data()
+        # self._update_info_process()
 
     def _load_data(self) -> dict:
         """Load process information from data.json file."""
@@ -34,7 +35,12 @@ class Process:
                 cwd=".",
             )
 
-        data = {"pid": process.pid, "commands": commands, "status": "running"}
+        data = {
+            "pid": process.pid,
+            # "name": ""
+            "commands": commands,
+            "status": "running",
+        }
         self.info_process[str(process.pid)] = data
         self._save_data()
 
@@ -57,3 +63,33 @@ class Process:
             proc.kill()
             self.info_process[str(pid)]["status"] = "terminated"
             self._save_data()
+
+    def _update_info_process(self) -> None:
+        """Update the status of all tracked processes."""
+        for pid_str, info in self.info_process.items():
+            pid = int(pid_str)
+            if psutil.pid_exists(pid):
+                proc = psutil.Process(pid)
+                if proc.is_running():
+                    info["status"] = "running"
+                else:
+                    info["status"] = "stopped"
+            else:
+                del self.info_process[pid_str]
+        self._save_data()
+
+    def get_process_info(self, pid: int) -> dict | None:
+        """Get information about a specific process by its PID."""
+        data = self.info_process.get(str(pid), "Not Found PID")
+        return (
+            "PID: "
+            + str(pid)
+            + " \n"
+            + "Status: "
+            + data["status"]
+            + " \n"
+            + "Commands: "
+            + " ".join(data["commands"])
+            if data != "Not Found PID"
+            else data
+        )
