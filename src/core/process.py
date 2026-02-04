@@ -83,8 +83,8 @@ class Process:
             proc.terminate()
             proc.wait(timeout=3)
             print(f"Process with PID {data['pid']} has been stopped.")
-            if pid in self.info_process:
-                self.info_process[pid]["status"] = "stopped"
+            if str(data['pid']) in self.info_process:
+                self.info_process[f"{data['pid']}"]["status"] = "stopped"
                 self._save_data()
         except psutil.NoSuchProcess:
             print(f"No process found with PID {data['pid']}.")
@@ -93,8 +93,8 @@ class Process:
                 f"Process with PID {data['pid']} did not terminate in time; killing it."
             )
             proc.kill()
-            if pid in self.info_process:
-                self.info_process[pid]["status"] = "stopped"
+            if str(data['pid']) in self.info_process:
+                self.info_process[f"{data['pid']}"]["status"] = "stopped"
                 self._save_data()
 
     def _update_info_process(self) -> None:
@@ -152,9 +152,8 @@ class Process:
     def terminate_all_processes(self):
         """Terminate all running processes tracked in info_process."""
         if self.info_process:
-            for pid_str in list(self.info_process.keys()):
-                pid = int(pid_str)
-                self.terminate(pid)
+            for pid in list(self.info_process.keys()):
+                self.terminate(int(pid))
         else:
             print("There are no processes to terminate.")
 
