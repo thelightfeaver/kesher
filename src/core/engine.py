@@ -51,7 +51,7 @@ def restart(id: str) -> None:
 
 
 def status(id: str) -> None:
-    Process().get_process_info(id)
+    Process().status(id)
 
 
 def log(id: str) -> None:

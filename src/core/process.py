@@ -77,7 +77,7 @@ class Process:
         """
         stop a process by its PID.
         args:
-            pid (int): The PID of the process to stop.
+            pid (str): The PID of the process to stop.
         """
         data = self._get_process_info(str(pid))
         if data is None:
@@ -113,11 +113,11 @@ class Process:
                     info["status"] = "stopped"
         self._save_data()
 
-    def get_process_info(self, pid: str) -> None:
+    def status(self, pid: str) -> None:
         """
         Get information about a specific process by its PID.
         Args:
-            pid (int): The PID of the process to retrieve information for.
+            pid (str): The PID of the process to retrieve information for.
         """
         data = self.info_process if pid == "all" else self._get_process_info(pid)
         if data is None:
@@ -221,7 +221,7 @@ class Process:
         if data is None:
             print(f"No process found with PID {id}.")
             return
-        
+
         if id == "all":
             for pid in list(self.info_process.keys()):
                 if psutil.pid_exists(int(pid)):
