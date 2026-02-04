@@ -83,17 +83,15 @@ class Process:
             proc.terminate()
             proc.wait(timeout=3)
             print(f"Process with PID {data['pid']} has been stopped.")
-            if str(data['pid']) in self.info_process:
+            if str(data["pid"]) in self.info_process:
                 self.info_process[f"{data['pid']}"]["status"] = "stopped"
                 self._save_data()
         except psutil.NoSuchProcess:
             print(f"No process found with PID {data['pid']}.")
         except psutil.TimeoutExpired:
-            print(
-                f"Process with PID {data['pid']} did not stop in time; killing it."
-            )
+            print(f"Process with PID {data['pid']} did not stop in time; killing it.")
             proc.kill()
-            if str(data['pid']) in self.info_process:
+            if str(data["pid"]) in self.info_process:
                 self.info_process[f"{data['pid']}"]["status"] = "stopped"
                 self._save_data()
 
