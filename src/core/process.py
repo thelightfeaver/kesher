@@ -134,7 +134,7 @@ class Process:
         table.add_column("Auto Start", justify="center")
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
-
+        # TODO: FIX ERROR 
         for pid, info in self.info_process.items():
             status_color = "green" if info["status"] == "running" else "red"
             table.add_row(
