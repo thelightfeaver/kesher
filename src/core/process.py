@@ -59,7 +59,9 @@ class Process:
             "name": temp_name,
             "log": f".logs/{temp_name}.log",
             "auto_start": auto_start,
-            "size": round(psutil.Process(process.pid).memory_info().rss / 1024 / 1024, 1),
+            "size": round(
+                psutil.Process(process.pid).memory_info().rss / 1024 / 1024, 1
+            ),
             "commands": commands,
             "status": "running",
         }
@@ -80,9 +82,9 @@ class Process:
             proc = psutil.Process(data["pid"])
             proc.terminate()
             proc.wait(timeout=3)
-            print(f"Process with PID {data['pid']} has been terminated.")
+            print(f"Process with PID {data['pid']} has been stopped.")
             if pid in self.info_process:
-                self.info_process[pid]["status"] = "terminated"
+                self.info_process[pid]["status"] = "stopped"
                 self._save_data()
         except psutil.NoSuchProcess:
             print(f"No process found with PID {data['pid']}.")
@@ -92,7 +94,7 @@ class Process:
             )
             proc.kill()
             if pid in self.info_process:
-                self.info_process[pid]["status"] = "terminated"
+                self.info_process[pid]["status"] = "stopped"
                 self._save_data()
 
     def _update_info_process(self) -> None:
@@ -113,8 +115,6 @@ class Process:
         """Get information about a specific process by its PID.
         Args:
             pid (int): The PID of the process to retrieve information for.
-        Returns:
-            dict | None: A dictionary containing process information or None if not found.
         """
         data = self._get_process_info(pid)
         if data is None:
