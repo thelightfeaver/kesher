@@ -76,13 +76,16 @@ class Process:
             print(f"No process found with PID {pid}.")
             return
 
+        # Get the actual PID key from the stored data
+        pid_key = str(data["pid"])
+        
         try:
             proc = psutil.Process(data["pid"])
             proc.terminate()
             proc.wait(timeout=3)
             print(f"Process with PID {data['pid']} has been terminated.")
-            if pid in self.info_process:
-                self.info_process[pid]["status"] = "terminated"
+            if pid_key in self.info_process:
+                self.info_process[pid_key]["status"] = "terminated"
                 self._save_data()
         except psutil.NoSuchProcess:
             print(f"No process found with PID {data['pid']}.")
@@ -91,8 +94,8 @@ class Process:
                 f"Process with PID {data['pid']} did not terminate in time; killing it."
             )
             proc.kill()
-            if pid in self.info_process:
-                self.info_process[pid]["status"] = "terminated"
+            if pid_key in self.info_process:
+                self.info_process[pid_key]["status"] = "terminated"
                 self._save_data()
 
     def _update_info_process(self) -> None:
