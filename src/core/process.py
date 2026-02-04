@@ -30,7 +30,7 @@ class Process:
             json.dump(self.info_process, f, indent=4)
 
     def execute(
-        self, commands: list[str], name=str | None, auto_start=False
+        self, commands: list[str], name=str | None, auto_start=False, technology=None
     ) -> subprocess.Popen:
         """
         Execute a system command and return the running process.
@@ -62,6 +62,7 @@ class Process:
             "name": temp_name,
             "log": f".logs/{temp_name}.log",
             "auto_start": auto_start,
+            "technology": technology,
             "size": round(
                 psutil.Process(process.pid).memory_info().rss / 1024 / 1024, 1
             ),
@@ -136,6 +137,7 @@ class Process:
         table.add_column("Auto Start", justify="center")
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
+        table.add_column("Technology", style="magenta")
         for pid, info in data.items():
             status_color = "green" if info["status"] == "running" else "red"
             table.add_row(
@@ -145,6 +147,7 @@ class Process:
                 "✓" if info["auto_start"] else "✗",
                 " ".join(info["commands"]),
                 str(info["size"]),
+                info["technology"] if info["technology"] else "N/A",
             )
 
         console.print(table)
@@ -192,7 +195,7 @@ class Process:
         Returns:
             dict | None: A dictionary containing process information or None if not found.
         """
-        
+
         if id:
             if id == "all":
                 return self.info_process.copy()
@@ -217,7 +220,7 @@ class Process:
             return
 
         if data:
-            for key, value in data.items() :
+            for key, value in data.items():
                 if psutil.pid_exists(int(key)):
                     self.stop(key)
                 del self.info_process[key]

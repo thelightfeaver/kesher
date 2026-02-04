@@ -12,24 +12,28 @@ def start(file_path: str, name=str | None, auto_start=False) -> None:
                     [f"{env.venv_path}", "-u", "-m", "fastapi", "dev", f"{file_path}"],
                     name=name,
                     auto_start=auto_start,
+                    technology=env.api_type,
                 )
             elif env.api_type == "flask":
                 Process().execute(
                     [f"{env.venv_path}", "-u", f"{file_path}"],
                     name=name,
                     auto_start=auto_start,
+                    technology=env.api_type,
                 )
             elif env.api_type == "django":
                 Process().execute(
                     [f"{env.venv_path}", "-u", f"{file_path}", "runserver"],
                     name=name,
                     auto_start=auto_start,
+                    technology=env.api_type,
                 )
             elif env.api_type == "general":
                 Process().execute(
                     [f"{env.venv_path}", "-u", f"{file_path}"],
                     name=name,
                     auto_start=auto_start,
+                    technology=env.api_type,
                 )
             else:
                 print("Path not recognized for starting the application.")
