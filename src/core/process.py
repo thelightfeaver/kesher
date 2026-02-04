@@ -10,7 +10,7 @@ import psutil
 class Process:
     def __init__(self) -> None:
         self.info_process = self._load_data()
-        # self._update_info_process()
+        self._update_info_process()
 
     def _load_data(self) -> dict:
         """Load process information from data.json file."""
@@ -37,7 +37,7 @@ class Process:
 
         data = {
             "pid": process.pid,
-            # "name": ""
+            "size": psutil.Process(process.pid).memory_info().rss,
             "commands": commands,
             "status": "running",
         }
@@ -54,19 +54,21 @@ class Process:
             proc.terminate()
             proc.wait(timeout=3)
             print(f"Process with PID {pid} has been terminated.")
-            self.info_process[str(pid)]["status"] = "terminated"
-            self._save_data()
+            if str(pid) in self.info_process:
+                self.info_process[str(pid)]["status"] = "terminated"
+                self._save_data()
         except psutil.NoSuchProcess:
             print(f"No process found with PID {pid}.")
         except psutil.TimeoutExpired:
             print(f"Process with PID {pid} did not terminate in time; killing it.")
             proc.kill()
-            self.info_process[str(pid)]["status"] = "terminated"
-            self._save_data()
+            if str(pid) in self.info_process:
+                self.info_process[str(pid)]["status"] = "terminated"
+                self._save_data()
 
     def _update_info_process(self) -> None:
         """Update the status of all tracked processes."""
-        for pid_str, info in self.info_process.items():
+        for pid_str, info in list(self.info_process.items()):
             pid = int(pid_str)
             if psutil.pid_exists(pid):
                 proc = psutil.Process(pid)
