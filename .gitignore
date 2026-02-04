@@ -21,4 +21,5 @@ app/
 # secret files
 issue.md
 data.json
-process.log
+*.log
+*.json
