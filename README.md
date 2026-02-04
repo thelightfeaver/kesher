@@ -30,13 +30,13 @@ Options:
 ### Stop a process
 
 ```bash
-kesher stop <id | name>
+kesher stop <id | name | all>
 ```
 
 ### Check process status
 
 ```bash
-kesher status <id | name>
+kesher status <id | name | all>
 ```
 
 ### View process logs
