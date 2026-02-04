@@ -32,7 +32,6 @@ class Environment:
         return sys.executable
 
     def _determine_technology(self, file_path: str) -> str:
-
         if os.path.exists(file_path):
             with open(file_path, "r") as f:
                 lines = f.read().lower()
@@ -45,5 +44,4 @@ class Environment:
                 else:
                     return "general"
         else:
-            return None   
-        
+            return None
