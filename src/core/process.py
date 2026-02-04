@@ -217,14 +217,21 @@ class Process:
         Args:
             id (str): The PID of the process to delete.
         """
-        data = self._get_process_info(id)
+        data = self.info_process if id == "all" else self._get_process_info(id)
         if data is None:
             print(f"No process found with PID {id}.")
             return
-
-        if str(data["pid"]) in self.info_process:
-            if psutil.pid_exists(data["pid"]):
-                self.stop(str(data["pid"]))
-            del self.info_process[str(data["pid"])]
-            print(f"Process with PID {data['pid']} has been deleted from records.")
+        
+        if id == "all":
+            for pid in list(self.info_process.keys()):
+                if psutil.pid_exists(int(pid)):
+                    self.stop(pid)
+                del self.info_process[pid]
+                print(f"Process with PID {pid} has been deleted from records.")
+        else:
+            if str(data["pid"]) in self.info_process:
+                if psutil.pid_exists(data["pid"]):
+                    self.stop(str(data["pid"]))
+                del self.info_process[str(data["pid"])]
+                print(f"Process with PID {data['pid']} has been deleted from records.")
         self._save_data()
