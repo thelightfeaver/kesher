@@ -47,7 +47,7 @@ def stop(id: str) -> None:
 
 
 def status(id: str) -> None:
-    print(Process().get_process_info(id))
+    Process().get_process_info(id)
 
 
 def log(id: str) -> None:

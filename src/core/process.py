@@ -6,6 +6,8 @@ import subprocess
 
 import psutil
 from faker import Faker
+from rich.console import Console
+from rich.table import Table
 
 
 class Process:
@@ -107,7 +109,7 @@ class Process:
                 del self.info_process[pid_str]
         self._save_data()
 
-    def get_process_info(self, pid: str) -> dict | None:
+    def get_process_info(self, pid: str) -> None:
         """Get information about a specific process by its PID.
         Args:
             pid (int): The PID of the process to retrieve information for.
@@ -117,25 +119,30 @@ class Process:
         data = self._get_process_info(pid)
         if data is None:
             print(f"No process found with PID {pid}.")
-            return None
+            return
 
-        return (
-            "PID: "
-            + str(pid)
-            + " \n"
-            + "Status: "
-            + data["status"]
-            + "Name: "
-            + data["name"]
-            + " \n"
-            + "Auto Start: "
-            + str(data["auto_start"])
-            + " \n"
-            + "Commands: "
-            + " ".join(data["commands"])
-            if data != "Not Found PID"
-            else data
+        console = Console()
+        table = Table(
+            title="Process Information", show_header=True, header_style="bold magenta"
         )
+
+        table.add_column("PID", style="cyan", justify="right")
+        table.add_column("Name", style="green")
+        table.add_column("Status", style="yellow")
+        table.add_column("Auto Start", justify="center")
+        table.add_column("Commands", style="blue")
+
+        for pid, info in self.info_process.items():
+            status_color = "green" if info["status"] == "running" else "red"
+            table.add_row(
+                pid,
+                info["name"],
+                f"[{status_color}]{info['status']}[/{status_color}]",
+                "✓" if info["auto_start"] else "✗",
+                " ".join(info["commands"]),
+            )
+
+        console.print(table)
 
     def _create_folder_log(self) -> None:
         """Create a log folder for the process."""
