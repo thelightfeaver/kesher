@@ -56,3 +56,7 @@ def status(id: str) -> None:
 
 def log(id: str) -> None:
     print(Process().log(id))
+
+
+def delete(id: str) -> None:
+    Process().delete(id)

@@ -31,7 +31,8 @@ class Process:
     def execute(
         self, commands: list[str], name=str | None, auto_start=False
     ) -> subprocess.Popen:
-        """Execute a system command and return the running process.
+        """
+        Execute a system command and return the running process.
         Args:
             commands (list[str]): The command and its arguments to execute.
             name (str | None): Optional name for the process.
@@ -72,7 +73,11 @@ class Process:
         return process
 
     def stop(self, pid: str) -> None:
-        """stop a process by its PID."""
+        """
+        stop a process by its PID.
+        args:
+            pid (int): The PID of the process to stop.
+        """
         data = self._get_process_info(str(pid))
         if data is None:
             print(f"No process found with PID {pid}.")
@@ -108,7 +113,8 @@ class Process:
         self._save_data()
 
     def get_process_info(self, pid: str) -> None:
-        """Get information about a specific process by its PID.
+        """
+        Get information about a specific process by its PID.
         Args:
             pid (int): The PID of the process to retrieve information for.
         """
@@ -148,7 +154,8 @@ class Process:
         os.makedirs(log_folder, exist_ok=True)
 
     def stop_all(self):
-        """stop all running processes tracked in info_process."""
+        """
+        Stop all running processes tracked in info_process."""
         if self.info_process:
             for pid in list(self.info_process.keys()):
                 self.stop(int(pid))
@@ -156,7 +163,8 @@ class Process:
             print("There are no processes to stop.")
 
     def log(self, id: str) -> None:
-        """Retrieve and print the log of a specific process by its PID.
+        """
+        Retrieve and print the log of a specific process by its PID.
         Args:
             id (str): The PID of the process whose log is to be retrieved.
         """
@@ -176,7 +184,8 @@ class Process:
             print(f"No process found with PID {id}.")
 
     def _get_process_info(self, pid: str) -> dict | None:
-        """Get information about a specific process by its PID.
+        """
+        Get information about a specific process by its PID.
         Args:
             pid (int): The PID of the process to retrieve information for.
         Returns:
@@ -190,3 +199,21 @@ class Process:
 
     def restart(self, id: str) -> None:
         pass
+
+    def delete(self, id: str) -> None:        
+        """
+        Delete a process entry by its PID.
+        Args:
+            id (str): The PID of the process to delete.
+        """
+        data = self._get_process_info(id)
+        if data is None:
+            print(f"No process found with PID {id}.")
+            return
+        
+        if str(data["pid"]) in self.info_process:
+            if psutil.pid_exists(data["pid"]):
+                self.stop(str(data["pid"]))
+            del self.info_process[str(data["pid"])]
+            print(f"Process with PID {data['pid']} has been deleted from records.")
+        self._save_data()

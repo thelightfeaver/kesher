@@ -9,7 +9,7 @@ from .engine import restart as restart_app
 from .engine import start as start_app
 from .engine import status as status_app
 from .engine import stop as stop_app
-
+from .engine import delete as delete_app
 
 @click.group()
 def cli():
@@ -35,6 +35,10 @@ def stop(id):
 def restart(id):
     restart_app(id)
 
+@click.command()
+@click.argument("id", type=str)
+def delete(id):
+    delete_app(id)
 
 @click.command()
 @click.argument("id", type=str)
@@ -59,3 +63,4 @@ cli.add_command(stop)
 cli.add_command(status)
 cli.add_command(log)
 cli.add_command(restart)
+cli.add_command(delete)
