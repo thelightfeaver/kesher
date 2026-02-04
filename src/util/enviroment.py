@@ -5,10 +5,10 @@ import sys
 
 class Environment:
     ENVS = [
-        "./venv/bin/python",
-        "./venv/bin/python3",
-        "./.venv/bin/python3",
-        "./.venv/bin/python",
+        "venv/bin/python",
+        "venv/bin/python3",
+        ".venv/bin/python3",
+        ".venv/bin/python",
     ]
 
     def __init__(self, path: str) -> None:
