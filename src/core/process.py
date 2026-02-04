@@ -18,6 +18,7 @@ class Process:
 
     def _load_data(self) -> dict:
         """Load process information from data.json file."""
+        # TODO: FIX ERROR WHEN FILE NOT HAVE CORRECT JSON FORMAT
         if os.path.exists("process.json"):
             with open("process.json", "r") as f:
                 return json.load(f)
@@ -118,7 +119,7 @@ class Process:
         Args:
             pid (int): The PID of the process to retrieve information for.
         """
-        data = self._get_process_info(pid)
+        data = self.info_process if pid == "all" else self._get_process_info(pid)
         if data is None:
             print(f"No process found with PID {pid}.")
             return
@@ -134,16 +135,26 @@ class Process:
         table.add_column("Auto Start", justify="center")
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
-        # TODO: FIX ERROR 
-        for pid, info in self.info_process.items():
-            status_color = "green" if info["status"] == "running" else "red"
+        if pid == "all":
+            for pid, info in self.info_process.items():
+                status_color = "green" if info["status"] == "running" else "red"
+                table.add_row(
+                    pid,
+                    info["name"],
+                    f"[{status_color}]{info['status']}[/{status_color}]",
+                    "✓" if info["auto_start"] else "✗",
+                    " ".join(info["commands"]),
+                    str(info["size"]),
+                )
+        else:
+            status_color = "green" if data["status"] == "running" else "red"
             table.add_row(
-                pid,
-                info["name"],
-                f"[{status_color}]{info['status']}[/{status_color}]",
-                "✓" if info["auto_start"] else "✗",
-                " ".join(info["commands"]),
-                str(info["size"]),
+                str(data["pid"]),
+                data["name"],
+                f"[{status_color}]{data['status']}[/{status_color}]",
+                "✓" if data["auto_start"] else "✗",
+                " ".join(data["commands"]),
+                str(data["size"]),
             )
 
         console.print(table)
