@@ -4,8 +4,8 @@ from .process import Process
 
 
 def start(file_path: str, name=str | None, auto_start=False) -> None:
-    if file_path:
-        env = Environment(file_path)
+    env = Environment(file_path)
+    if env.file_path:
         if env.venv_path:
             if env.api_type == "fastapi":
                 Process().execute(
@@ -25,14 +25,14 @@ def start(file_path: str, name=str | None, auto_start=False) -> None:
                     name=name,
                     auto_start=auto_start,
                 )
-            elif env.api_type == "unknown":
+            elif env.api_type == "general":
                 Process().execute(
                     [f"{env.venv_path}", "-u", f"{file_path}"],
                     name=name,
                     auto_start=auto_start,
                 )
             else:
-                print("API type is unknown. Cannot start the application.")
+                print("Path not recognized for starting the application.")
         else:
             print("No virtual environment found in the specified file_path.")
     else:
