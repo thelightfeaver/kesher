@@ -110,6 +110,9 @@ class Process:
 
     def terminate_all_processes(self):
         """Terminate all running processes tracked in info_process."""
-        for pid_str in list(self.info_process.keys()):
-            pid = int(pid_str)
-            self.terminate(pid)
+        if self.info_process:
+            for pid_str in list(self.info_process.keys()):
+                pid = int(pid_str)
+                self.terminate(pid)
+        else:
+            print("There are no processes to terminate.") 
