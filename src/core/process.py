@@ -38,6 +38,7 @@ class Process:
 
         data = {
             "pid": process.pid,
+            "host": os.uname().nodename,
             "name": name if name else Faker().word() + str(Faker().random_number(digits=5, fix_len=True)),
             "size": psutil.Process(process.pid).memory_info().rss,
             "commands": commands,
