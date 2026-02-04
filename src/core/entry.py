@@ -4,12 +4,13 @@ import click
 
 from view.monitor import KesherMenu
 
+from .engine import delete as delete_app
 from .engine import log as log_app
 from .engine import restart as restart_app
 from .engine import start as start_app
 from .engine import status as status_app
 from .engine import stop as stop_app
-from .engine import delete as delete_app
+
 
 @click.group()
 def cli():
@@ -35,10 +36,12 @@ def stop(id):
 def restart(id):
     restart_app(id)
 
+
 @click.command()
 @click.argument("id", type=str)
 def delete(id):
     delete_app(id)
+
 
 @click.command()
 @click.argument("id", type=str)

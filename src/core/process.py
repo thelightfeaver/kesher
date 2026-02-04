@@ -118,7 +118,7 @@ class Process:
         Args:
             pid (int): The PID of the process to retrieve information for.
         """
-        data = self.info_process if pid == "all" else self._get_process_info(pid)
+        data = self._get_process_info(pid)
         if data is None:
             print(f"No process found with PID {pid}.")
             return
@@ -200,7 +200,7 @@ class Process:
     def restart(self, id: str) -> None:
         pass
 
-    def delete(self, id: str) -> None:        
+    def delete(self, id: str) -> None:
         """
         Delete a process entry by its PID.
         Args:
@@ -210,7 +210,7 @@ class Process:
         if data is None:
             print(f"No process found with PID {id}.")
             return
-        
+
         if str(data["pid"]) in self.info_process:
             if psutil.pid_exists(data["pid"]):
                 self.stop(str(data["pid"]))
