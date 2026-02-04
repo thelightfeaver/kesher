@@ -14,6 +14,7 @@ class Environment:
     def __init__(self, file_path: str) -> None:
         self.venv_path = self._get_enviroments_exists()
         self.api_type = self._determine_technology(file_path)
+        self.file_path = None if self.api_type == None else file_path
         self._save_data()
 
     def _save_data(self) -> None:
@@ -31,13 +32,18 @@ class Environment:
         return sys.executable
 
     def _determine_technology(self, file_path: str) -> str:
-        with open(file_path, "r") as f:
-            lines = f.read().lower()
-            if "fastapi" in lines:
-                return "fastapi"
-            elif "flask" in lines:
-                return "flask"
-            elif "django" in lines:
-                return "django"
-            else:
-                return "unknown"
+
+        if os.path.exists(file_path):
+            with open(file_path, "r") as f:
+                lines = f.read().lower()
+                if "fastapi" in lines:
+                    return "fastapi"
+                elif "flask" in lines:
+                    return "flask"
+                elif "django" in lines:
+                    return "django"
+                else:
+                    return "general"
+        else:
+            return None   
+        
