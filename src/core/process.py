@@ -59,7 +59,7 @@ class Process:
             "name": temp_name,
             "log": f".logs/{temp_name}.log",
             "auto_start": auto_start,
-            "size": psutil.Process(process.pid).memory_info().rss,
+            "size": round(psutil.Process(process.pid).memory_info().rss / 1024 / 1024, 1),
             "commands": commands,
             "status": "running",
         }
@@ -131,6 +131,7 @@ class Process:
         table.add_column("Status", style="yellow")
         table.add_column("Auto Start", justify="center")
         table.add_column("Commands", style="blue")
+        table.add_column("Memory (MB)", justify="right")
 
         for pid, info in self.info_process.items():
             status_color = "green" if info["status"] == "running" else "red"
@@ -140,6 +141,7 @@ class Process:
                 f"[{status_color}]{info['status']}[/{status_color}]",
                 "✓" if info["auto_start"] else "✗",
                 " ".join(info["commands"]),
+                str(info["size"]),
             )
 
         console.print(table)
