@@ -11,4 +11,5 @@ dependencies = [
     "requests>=2.32.5",
     "rich>=14.3.2",
     "textual>=7.5.0",
+    "uvloop>=0.22.1",
 ]
