@@ -54,8 +54,11 @@ class Process:
                 stdin=subprocess.DEVNULL,
                 cwd=".",
             )
-
         id = process.pid
+
+        # TODO: CHECK IF CURRENT PROCESS IS RUNNING
+
+        # Save information about process
         data = {
             "pid": id,
             "host": os.uname().nodename,
@@ -85,7 +88,10 @@ class Process:
         if data is None:
             print(f"No process found with PID {id}.")
             return
+        # Select first records
         pid = next(iter(data.values()))["pid"]
+
+        # Terminate a process
         try:
             proc = psutil.Process(pid)
             proc.terminate()
@@ -96,6 +102,8 @@ class Process:
                 self._save_data()
         except psutil.NoSuchProcess:
             print(f"No process found with PID {pid}.")
+            self.info_process[f"{pid}"]["status"] = "stopped"
+            self._save_data()
         except psutil.TimeoutExpired:
             print(f"Process with PID {pid} did not stop in time; killing it.")
             proc.kill()
@@ -206,7 +214,31 @@ class Process:
         return None
 
     def restart(self, id: str) -> None:
-        pass
+        """
+        Restart a process by its PID.
+        Args:
+            id (str): The PID of the process to restart.
+        """
+        data = self._get_process_info(id)
+        if data is None:
+            print(f"No process found with PID {id}.")
+            return
+
+        if data:
+            for key, value in data.items():
+                if value["status"] == "running" and psutil.pid_exists(int(key)):
+                    self.stop(key)
+
+                self.execute(
+                    value["commands"],
+                    value["name"],
+                    value["auto_start"],
+                    value["technology"],
+                )
+                del self.info_process[key]
+                print(f"Process with PID {key} has been restarted.")
+        else:
+            print("No process will be restarted")
 
     def delete(self, id: str) -> None:
         """
