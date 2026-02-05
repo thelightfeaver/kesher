@@ -1,4 +1,3 @@
-import json
 import os
 import sys
 
@@ -15,12 +14,6 @@ class Environment:
         self.venv_path = self._get_enviroments_exists()
         self.api_type = self._determine_technology(file_path)
         self.file_path = None if self.api_type == None else file_path
-        self._save_data()
-
-    def _save_data(self) -> None:
-        data = {"venv_path": self.venv_path, "api_type": self.api_type}
-        with open("data.json", "w") as f:
-            json.dump(data, f, indent=4)
 
     def _get_enviroments_exists(self) -> str:
         for env in self.ENVS:
