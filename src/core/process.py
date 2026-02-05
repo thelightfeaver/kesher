@@ -30,10 +30,7 @@ class Process:
             json.dump(self.info_process, f, indent=4)
 
     def execute(
-        self, commands: list[str], 
-        name=str | None, 
-        auto_start=False, 
-        technology=None
+        self, commands: list[str], name=str | None, auto_start=False, technology=None
     ) -> subprocess.Popen:
         """
         Execute a system command and return the running process.
