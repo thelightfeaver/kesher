@@ -20,7 +20,7 @@ def start(file_path: str, name=str | None, auto_start=False) -> None:
             commands =    [f"{env.venv_path}", "-u", f"{file_path}"],
               
         Process().execute(
-            commands=commands
+            commands=commands,
             name=name,
             auto_start=auto_start,
             technology=env.api_type,
