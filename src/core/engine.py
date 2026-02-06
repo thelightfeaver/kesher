@@ -1,4 +1,4 @@
-from util.enviroment import Environment
+from util.environment import Environment
 
 from .process import Process
 
