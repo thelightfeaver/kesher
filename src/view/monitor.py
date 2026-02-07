@@ -1,7 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Container
-from textual.widgets import DataTable, Footer, Header
+from textual.widgets import DataTable, Footer, Header, Log
 
 from core.process import Process
 
@@ -21,7 +21,7 @@ class KesherMenu(App):
         Binding(key="s", action="stop", description="Stop"),
         Binding(key="r", action="restart", description="Restart"),
         Binding(key="d", action="delete", description="Delete"),
-        Binding(key="l", action="show_log", description="Log"),
+        Binding(key="l", action="log", description="Log"),
         Binding(key="f", action="refresh", description="Refresh"),
         Binding(key="q", action="quit", description="Quit"),
     ]
@@ -37,6 +37,7 @@ class KesherMenu(App):
             DataTable(id="process-table", cursor_type="row"),
             id="main-container",
         )
+        yield Log()
         yield Footer(show_command_palette=False, compact=True)
 
     def on_mount(self) -> None:
@@ -110,12 +111,14 @@ class KesherMenu(App):
         self.load_processes()
         self.notify("Process deleted")
 
-    def action_show_log(self) -> None:
+    def action_log(self) -> None:
         """Show log for the selected process."""
         if not self._ensure_selected():
             return
-        self.process_manager.log(self.selected_pid)
-        self.notify(f"Displayed log for {self.selected_pid}")
+        log_content = self.process_manager.log(self.selected_pid)
+        if log_content is not None:
+            self.query_one(Log).write(log_content)
+            self.notify(f"Displayed log for {self.selected_pid}")
 
     def action_refresh(self) -> None:
         """Manually refresh the process list."""
