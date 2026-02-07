@@ -4,6 +4,9 @@ import json
 import os
 import subprocess
 
+from util.state import State
+from model.process import ProcessBase
+
 import psutil
 from faker import Faker
 from rich.console import Console
@@ -12,22 +15,8 @@ from rich.table import Table
 
 class Process:
     def __init__(self) -> None:
-        self.info_process = self._load_data()
-        self._update_info_process()
+        self.state = State()
         self._create_folder_log()
-
-    def _load_data(self) -> dict:
-        """Load process information from data.json file."""
-        # TODO: FIX ERROR WHEN FILE NOT HAVE CORRECT JSON FORMAT
-        if os.path.exists("process.json"):
-            with open("process.json", "r") as f:
-                return json.load(f)
-        return {}
-
-    def _save_data(self) -> None:
-        """Save process information to data.json file."""
-        with open("process.json", "w") as f:
-            json.dump(self.info_process, f, indent=4)
 
     def execute(
         self, commands: list[str], name=str | None, auto_start=False, technology=None
@@ -59,21 +48,18 @@ class Process:
         # TODO: CHECK IF CURRENT PROCESS IS RUNNING
 
         # Save information about process
-        data = {
-            "pid": id,
-            "host": os.uname().nodename,
-            "name": temp_name,
-            "log": f".logs/{temp_name}.log",
-            "auto_start": auto_start,
-            "technology": technology,
-            "size": round(
-                psutil.Process(process.pid).memory_info().rss / 1024 / 1024, 1
-            ),
-            "commands": commands,
-            "status": "running",
-        }
-        self.info_process[str(id)] = data
-        self._save_data()
+        self.state.add(ProcessBase(
+            pid= id,
+            host= os.uname().nodename,
+            name= temp_name,
+            log= f".logs/{temp_name}.log",
+            auto_start= auto_start,
+            size= round(psutil.Process(process.pid).memory_info().rss / 1024 / 1024, 1),
+            technology= technology,
+            commands= commands,
+            status= "running",   
+        ))
+        
 
         print(f"Process started with PID: {process.pid} and Name: {temp_name}")
         return process
@@ -84,7 +70,7 @@ class Process:
         args:
             id (str): The PID of the process to stop.
         """
-        data = self._get_process_info(str(id))
+        data = self.state.search(id)
         if data is None:
             print(f"No process found with PID {id}.")
             return
@@ -111,25 +97,13 @@ class Process:
                 self.info_process[f"{pid}"]["status"] = "stopped"
                 self._save_data()
 
-    def _update_info_process(self) -> None:
-        """Update the status of all tracked processes."""
-        for pid_str, info in list(self.info_process.items()):
-            pid = int(pid_str)
-            if psutil.pid_exists(pid):
-                proc = psutil.Process(pid)
-                if proc.is_running():
-                    info["status"] = "running"
-                else:
-                    info["status"] = "stopped"
-        self._save_data()
-
     def status(self, id: str) -> None:
         """
         Get information about a specific process by its PID.
         Args:
             id (str): The PID of the process to retrieve information for.
         """
-        data = self._get_process_info(id)
+        data = self.state.search(id)
         if data is None:
             print(f"No process found with PID {id}.")
             return
@@ -168,8 +142,8 @@ class Process:
     def stop_all(self):
         """
         Stop all running processes tracked in info_process."""
-        if self.info_process:
-            for pid in list(self.info_process.keys()):
+        if self.state.processes:
+            for pid in list(self.state.processes.keys()):
                 self.stop(int(pid))
         else:
             print("There are no processes to stop.")
@@ -180,7 +154,7 @@ class Process:
         Args:
             id (str): The PID of the process whose log is to be retrieved.
         """
-        process_info = self._get_process_info(id)
+        process_info = self.state.search(id)
         if process_info is None:
             print(f"No process found with PID {id}.")
             return
@@ -195,31 +169,13 @@ class Process:
         else:
             print(f"No process found with PID {id}.")
 
-    def _get_process_info(self, id: str) -> dict | None:
-        """
-        Get information about a specific process by its PID.
-        Args:
-            id (str): The PID of the process to retrieve information for.
-        Returns:
-            dict | None: A dictionary containing process information or None if not found.
-        """
-
-        if id:
-            if id == "all":
-                return self.info_process.copy()
-
-            for key, value in self.info_process.items():
-                if key == id or value["name"] == id:
-                    return dict({key: value})
-        return None
-
     def restart(self, id: str) -> None:
         """
         Restart a process by its PID.
         Args:
             id (str): The PID of the process to restart.
         """
-        data = self._get_process_info(id)
+        data = self.state.search(id)
         if data is None:
             print(f"No process found with PID {id}.")
             return
@@ -235,7 +191,7 @@ class Process:
                     value["auto_start"],
                     value["technology"],
                 )
-                del self.info_process[key]
+                self.state.delete(key)
                 print(f"Process with PID {key} has been restarted.")
         else:
             print("No process will be restarted")
@@ -246,7 +202,7 @@ class Process:
         Args:
             id (str): The PID of the process to delete.
         """
-        data = self._get_process_info(id)
+        data = self.state.search(id)
         if data is None or data is {}:
             print(f"No process found with PID {id}.")
             return
@@ -255,7 +211,7 @@ class Process:
             for key, value in data.items():
                 if psutil.pid_exists(int(key)):
                     self.stop(key)
-                del self.info_process[key]
+                self.state.delete(key)
                 print(f"Process with PID {key} has been deleted from records.")
         else:
             print("No process will be deleted")
