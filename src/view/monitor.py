@@ -74,7 +74,7 @@ class KesherTUI(App):
         resource_table.add_columns("Key", "Value")
 
         self.load_resource()
-        
+
         self.set_interval(
             interval=1,
             callback=self.load_log,
