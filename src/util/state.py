@@ -23,6 +23,7 @@ class State:
         """
         with open(self._state_file, "w") as file:
             json.dump(self.processes, file, default=lambda o: o.__dict__, indent=4)
+        self.load()
 
     def load(self):
         """
