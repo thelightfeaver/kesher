@@ -149,7 +149,7 @@ class Process:
         data = self.state.search(id)
         data = next(iter(data.values()), None)
 
-        if data is not None and data != {}:
+        if data != {}:
             log_path = data.get("log")
             if log_path and os.path.exists(log_path):
                 with open(log_path, "r") as log_file:
