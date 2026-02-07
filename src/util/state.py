@@ -13,8 +13,8 @@ class State:
     """Class to manage the state of processes."""
 
     def __init__(self):
-        self._state_file = "state.json"
         self.processes: dict[str, ProcessBase] = {}
+        self._state_file = "state.json"
         self.load()
 
     def save(self):
@@ -28,11 +28,16 @@ class State:
         """
         Load the state from a file.
         """
-        if os.path.exists(self._state_file):
-            with open(self._state_file, "r") as file:
-                self.processes = json.load(file)
-        else:
-            self.processes = {}
+        try:
+            if os.path.exists(self._state_file):
+                with open(self._state_file, "r") as file:
+                    self.processes = json.load(file)
+            else:
+                self.processes = {}
+        except json.JSONDecodeError:
+            with open(self._state_file, "w") as file:
+                json.dump(self.processes, indent=4)
+            
 
     def search(self, key: str) -> dict[str, ProcessBase]:
         """
