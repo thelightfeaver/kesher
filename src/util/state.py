@@ -5,10 +5,13 @@ import os
 from pprint import pprint
 
 import psutil
+
 from model.process import ProcessBase
+
 
 class State:
     """Class to manage the state of processes."""
+
     def __init__(self):
         self._state_file = "state.json"
         self.processes: dict[str, ProcessBase] = {}
@@ -37,24 +40,27 @@ class State:
         Returns:
             The value associated with the key, or an empty dictionary if not found.
         """
-
         if key == "all":
             return self.processes.copy()
 
-        for key, value in self.processes.items():
-            if key == id or value.name == id:
+        for id, value in self.processes.items():
+            if key == str(id) or value["name"] == key:
                 return dict({key: value})
+
+        print(f"Key: {key} not found in state.")
         return {}
 
-    def update(self, key: str, value: ProcessBase):
+    def update(self, key: str, value: dict):
         """
         Update the state with a new key-value pair.
         Args:
             key (str): The key to update.
             value: The value to associate with the key.
         """
-        self.processes[key] = value
-        self.save()
+
+        if key in self.processes.keys():
+            self.processes[key] = value
+            self.save()
 
     def delete(self, key: str):
         """
