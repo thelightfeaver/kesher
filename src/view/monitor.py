@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.containers import Container
+from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Footer, Header, Log
 
 from core.process import Process
@@ -17,7 +17,7 @@ class KesherTUI(App):
     }
 
     #log-view {
-        height: 30%;
+        height: 80%;
         border: solid $primary;
     }
 
@@ -42,16 +42,17 @@ class KesherTUI(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        yield Container(
-            DataTable(id="process-table", cursor_type="row"),
-            id="main-container",
-            markup=True,
-        )
-        yield Log(id="log-view", highlight=True)
-        yield Container(
-            DataTable(id="resource-table", cursor_type="line"),
-            id="resource-container",
-            markup=True,
+        yield Horizontal(
+            Vertical(
+                DataTable(id="process-table", cursor_type="row"),
+                id="left-panel",
+            ),
+            Vertical(
+                Log(id="log-view", highlight=True),
+                DataTable(id="resource-table", cursor_type="line"),
+                markup=True,
+                id="right-panel",
+            ),
         )
         yield Footer(show_command_palette=False, compact=True)
 
