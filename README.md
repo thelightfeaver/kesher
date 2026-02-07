@@ -53,6 +53,7 @@ kesher restart <id | name | all>
 ### Interactive monitor
 
 ```bash
+WIP ⚠️
 kesher monitor
 ```
 
