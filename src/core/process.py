@@ -137,7 +137,7 @@ class Process:
         log_folder = os.path.join(".logs")
         os.makedirs(log_folder, exist_ok=True)
 
-    def log(self, id: str) -> str | None:
+    def log(self, id: str) -> None:
         """
         Retrieve and print the log of a specific process by its PID.
         Args:
@@ -155,7 +155,6 @@ class Process:
             if log_path and os.path.exists(log_path):
                 with open(log_path, "r") as log_file:
                     print(log_file.read().replace("None", ""))
-                    return log_file.read().replace("None", "")
             else:
                 print(f"No log file found for process with PID {id}.")
         else:
