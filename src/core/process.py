@@ -177,7 +177,7 @@ class Process:
                 if value["status"] == "running" and psutil.pid_exists(value["pid"]):
                     self.stop(key)
 
-                self.execute(
+                self.start(
                     value["commands"],
                     value["name"],
                     value["auto_start"],
