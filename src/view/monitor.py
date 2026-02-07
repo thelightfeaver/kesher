@@ -21,7 +21,6 @@ class KesherMenu(App):
         Binding(key="s", action="stop", description="Stop"),
         Binding(key="r", action="restart", description="Restart"),
         Binding(key="d", action="delete", description="Delete"),
-        Binding(key="l", action="log", description="Log"),
         Binding(key="f", action="refresh", description="Refresh"),
         Binding(key="q", action="quit", description="Quit"),
     ]
@@ -36,8 +35,9 @@ class KesherMenu(App):
         yield Container(
             DataTable(id="process-table", cursor_type="row"),
             id="main-container",
+            markup=True,
         )
-        yield Log()
+        yield Log(id="log-view", highlight=True)
         yield Footer(show_command_palette=False, compact=True)
 
     def on_mount(self) -> None:
@@ -55,6 +55,8 @@ class KesherMenu(App):
         )
 
         self.load_processes()
+
+        self.set_interval(2, self.action_log)
 
     def load_processes(self) -> None:
         """Load and display all processes in the table."""
@@ -103,22 +105,22 @@ class KesherMenu(App):
         self.load_processes()
         self.notify(f"Process {self.selected_pid} restarted")
 
-    def action_delete(self) -> None:
-        """Delete the selected process."""
-        if not self._ensure_selected():
-            return
-        self.process_manager.delete(self.selected_pid)
-        self.load_processes()
-        self.notify("Process deleted")
-
     def action_log(self) -> None:
         """Show log for the selected process."""
+
+        # Ensure a process is selected before attempting to show logs
         if not self._ensure_selected():
             return
-        log_content = self.process_manager.log(self.selected_pid)
-        if log_content is not None:
-            self.query_one(Log).write(log_content)
-            self.notify(f"Displayed log for {self.selected_pid}")
+
+        data = self.process_manager.state.search(self.selected_pid)
+        data = next(iter(data.values()), None)
+
+        if data is not None:
+            log_widget = self.query_one("#log-view", Log)
+            log_widget.clear()
+            with open(data.get("log"), "r") as log_file:
+                log_content = log_file.read().replace("None", "")
+                log_widget.write(log_content)
 
     def action_refresh(self) -> None:
         """Manually refresh the process list."""
