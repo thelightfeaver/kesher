@@ -31,7 +31,6 @@ class KesherTUI(App):
         Binding(key="s", action="stop", description="Stop"),
         Binding(key="r", action="restart", description="Restart"),
         Binding(key="d", action="delete", description="Delete"),
-        Binding(key="l", action="log", description="Show Log"),
         Binding(key="f", action="refresh", description="Refresh"),
         Binding(key="q", action="quit", description="Quit"),
     ]
@@ -78,7 +77,7 @@ class KesherTUI(App):
         
         self.set_interval(
             interval=1,
-            callback=self.action_log,
+            callback=self.load_log,
             name="log_refresh",
         )
 
@@ -137,7 +136,7 @@ class KesherTUI(App):
         self.load_processes()
         self.notify(f"Process {self.selected_pid} restarted")
 
-    def action_log(self) -> None:
+    def load_log(self) -> None:
         """Show log for the selected process."""
 
         # Ensure a process is selected before attempting to show logs
