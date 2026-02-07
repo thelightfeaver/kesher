@@ -200,7 +200,7 @@ class Process:
             id (str): The PID of the process to delete.
         """
         data = self.state.search(id)
-        if data is None or data is {}:
+        if data is None or data == {}:
             print(f"No process found with PID {id}.")
             return
 

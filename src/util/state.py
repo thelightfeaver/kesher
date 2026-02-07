@@ -2,9 +2,6 @@
 
 import json
 import os
-from pprint import pprint
-
-import psutil
 
 from model.process import ProcessBase
 
