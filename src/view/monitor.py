@@ -1,21 +1,127 @@
-from textual.app import App
+from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.containers import Container
+from textual.widgets import DataTable, Footer, Header
 
-from .footer import FooterWidget
-from .header import HeaderWidget
+from core.process import Process
+
 
 
 class KesherMenu(App):
+    CSS = """
+    DataTable {
+        height: 1fr;
+    }
+
+    #process-table {
+        border: solid $primary;
+    }
+    """
+
     BINDINGS = [
         Binding(key="s", action="stop", description="Stop"),
         Binding(key="r", action="restart", description="Restart"),
+        Binding(key="d", action="delete", description="Delete"),
+        Binding(key="l", action="show_log", description="Log"),
+        Binding(key="f", action="refresh", description="Refresh"),
         Binding(key="q", action="quit", description="Quit"),
     ]
 
-    def compose(self):
-        yield HeaderWidget()
-        yield FooterWidget()
+    def __init__(self) -> None:
+        super().__init__()
+        self.process_manager = Process()
+        self.selected_pid: str | None = None
+
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
+        
+        yield Container(
+            DataTable(id="process-table", cursor_type="row"),
+            id="main-container",
+        )
+        yield Footer(show_command_palette=False, compact=True)
 
     def on_mount(self) -> None:
         self.title = "Kesher - Process Manager"
         self.sub_title = "Monitoring Application Processes"
+
+        table = self.query_one("#process-table", DataTable)
+        table.add_columns(
+            "PID",
+            "Name",
+            "Status",
+            "Auto Start",
+            "Technology",
+            "Memory (MB)",
+        )
+
+        self.load_processes()
+        self.set_interval(2, self.load_processes)
+
+    def load_processes(self) -> None:
+        """Load and display all processes in the table."""
+        table = self.query_one("#process-table", DataTable)
+        table.clear()
+
+        all_processes = self.process_manager.state.search("all")
+        if not all_processes:
+            return
+
+        for pid, info in all_processes.items():
+            status_style = "green" if info["status"] == "running" else "red"
+            table.add_row(
+                str(pid),
+                info["name"],
+                f"[{status_style}]{info['status']}[/{status_style}]",
+                "Y" if info["auto_start"] else "N",
+                info.get("technology", "N/A") or "N/A",
+                str(info["size"]),
+                key=str(pid),
+            )
+
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        """Track selected PID for actions."""
+        self.selected_pid = event.row_key.value
+
+    def _ensure_selected(self) -> bool:
+        if self.selected_pid:
+            return True
+        self.notify("No process selected", severity="warning")
+        return False
+
+    def action_stop(self) -> None:
+        """Stop the selected process."""
+        if not self._ensure_selected():
+            return
+        self.process_manager.stop(self.selected_pid)
+        self.load_processes()
+        self.notify(f"Process {self.selected_pid} stopped")
+
+    def action_restart(self) -> None:
+        """Restart the selected process."""
+        if not self._ensure_selected():
+            return
+        self.process_manager.restart(self.selected_pid)
+        self.load_processes()
+        self.notify(f"Process {self.selected_pid} restarted")
+
+    def action_delete(self) -> None:
+        """Delete the selected process."""
+        if not self._ensure_selected():
+            return
+        self.process_manager.delete(self.selected_pid)
+        self.selected_pid = None
+        self.load_processes()
+        self.notify("Process deleted")
+
+    def action_show_log(self) -> None:
+        """Show log for the selected process."""
+        if not self._ensure_selected():
+            return
+        self.process_manager.log(self.selected_pid)
+        self.notify(f"Displayed log for {self.selected_pid}")
+
+    def action_refresh(self) -> None:
+        """Manually refresh the process list."""
+        self.load_processes()
+        self.notify("Process list refreshed")
