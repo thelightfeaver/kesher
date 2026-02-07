@@ -1,8 +1,8 @@
 """Module for managing system processes."""
 
-import json
 import os
 import subprocess
+from datetime import datetime
 
 import psutil
 from faker import Faker
@@ -63,6 +63,12 @@ class Process:
                 technology=technology,
                 commands=commands,
                 status="running",
+                start_time=datetime.fromtimestamp(
+                    psutil.Process(process.pid).create_time()
+                ).strftime("%Y-%m-%d %H:%M:%S"),
+                version_interpreter=str(
+                    subprocess.check_output([commands[0], "--version"]).decode().strip()
+                ),
             )
         )
         print(f"Process started with PID: {process.pid} and Name: {temp_name}")
