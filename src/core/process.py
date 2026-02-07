@@ -20,7 +20,7 @@ class Process:
         self.state = State()
         self._create_folder_log()
 
-    def execute(
+    def start(
         self, commands: list[str], name=str | None, auto_start=False, technology=None
     ) -> subprocess.Popen:
         """

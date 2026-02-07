@@ -26,7 +26,7 @@ def start(file_path: str, name=str | None, auto_start=False) -> None:
         elif env.api_type == "general":
             commands = ([f"{env.venv_path}", "-u", f"{file_path}"],)
 
-        Process().execute(
+        Process().start(
             commands=commands,
             name=name,
             auto_start=auto_start,
