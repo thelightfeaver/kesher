@@ -22,7 +22,7 @@ class Daemon:
         while True:
             # Initialize Process manager
             process_manager = Process()
-            processes = process_manager.state.processes.copy()
+            processes = process_manager.state.search("all")
 
             # If there are no processes, wait and continue
             if not processes:
@@ -38,7 +38,7 @@ class Daemon:
                     print(
                         f"Process {info['name']} with PID {pid} has stopped. Restarting..."
                     )
-                    process_manager.execute(
+                    process_manager.start(
                         commands=info["commands"],
                         name=info["name"],
                         auto_start=info["auto_start"],
