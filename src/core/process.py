@@ -207,3 +207,33 @@ class Process:
                 print(f"Process with PID {key} has been deleted from records.")
         else:
             print("No process will be deleted")
+
+    def get_resources(self) -> dict:
+        """Get current system resource usage.
+
+        Returns:
+            dict: A dictionary containing CPU usage, CPU count, total RAM, used RAM, and RAM usage percentage.
+                keys:
+                    - cpu_usage (float): Current CPU usage percentage.
+                    - cpu_count (int): Total number of logical CPU cores.
+                    - total_ram_gb (float): Total RAM in gigabytes.
+                    - used_ram_gb (float): Used RAM in gigabytes.
+                    - ram_usage_percent (float): Current RAM usage percentage.
+        """
+        # --- CPU Information ---
+        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu_count = psutil.cpu_count(logical=True)
+
+        # --- RAM Information ---
+        ram = psutil.virtual_memory()
+        total_ram_gb = round(ram.total / (1024**3), 2)
+        used_ram_gb = round(ram.used / (1024**3), 2)
+        ram_usage_percent = ram.percent
+
+        return {
+            "cpu_usage": cpu_usage,
+            "cpu_count": cpu_count,
+            "total_ram_gb": total_ram_gb,
+            "used_ram_gb": used_ram_gb,
+            "ram_usage_percent": ram_usage_percent,
+        }
