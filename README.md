@@ -47,7 +47,7 @@ kesher log <id | name>
 
 ### Restart a process
 
-```bash 
+```bash
 kesher restart <id | name | all>
 ```
 ### Interactive monitor
