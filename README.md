@@ -1,13 +1,12 @@
 # Kesher - Process Manager
 
 ## Features
-
-- Monitor processes
-- Start and stop processes
-- View process status
-- Log management
-- Auto-start configuration
-- Interactive monitor interface
+- 📊 Monitor processes
+- ▶️ Start and stop processes
+- 📋 View process status
+- 📝 Log management
+- ⚙️ Auto-start configuration
+- 🖥️ Interactive monitor interface
 
 ## Installation
 
