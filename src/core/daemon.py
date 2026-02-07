@@ -1,8 +1,16 @@
+"""Daemon class to monitor and manage processes."""
+
 import asyncio
+import sys
+import os
 
 import psutil
 import uvloop
-from process import Process
+
+# Add src directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from core.process import Process
 
 
 class Daemon:
@@ -19,12 +27,14 @@ class Daemon:
             # If there are no processes, wait and continue
             if not processes:
                 print("No processes to monitor.")
-                await asyncio.sleep(10)
+                await asyncio.sleep(1)
                 continue
 
             # Check each process status and restart if necessary
             for pid, info in processes.items():
-                if not psutil.pid_exists(int(pid)) and bool(info["auto_start"]) == True:
+                if psutil.pid_exists(int(pid)):
+                    print(f"Process {info['name']} with PID {pid} is running.")
+                elif not psutil.pid_exists(int(pid)) and bool(info["auto_start"]) == True:
                     print(
                         f"Process {info['name']} with PID {pid} has stopped. Restarting..."
                     )
@@ -35,17 +45,9 @@ class Daemon:
                         technology=info["technology"],
                     )
                     process_manager.state.delete(pid)
-                # Check if process is stopped but is marked as running
-                # TODO: IMPROVE THIS CHECK
-                elif not psutil.pid_exists(int(pid)) and info["status"] == "running":
-                    print(f"Process {info['name']} with PID {pid} has stopped.")
-                    process_manager.state.delete(pid)
-                    
-                else:
-                    print(f"Process {info['name']} with PID {pid} is running.")
-                    continue
+                
 
-            await asyncio.sleep(10)  # Monitor every 10 seconds
+            await asyncio.sleep(1)  # Monitor every 10 seconds
 
     def run(self):
         """Run the daemon to monitor processes."""
