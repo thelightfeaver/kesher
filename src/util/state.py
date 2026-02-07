@@ -80,22 +80,3 @@ class State:
         """
         self.processes[str(value.pid)] = value
         self.save()
-
-
-if __name__ == "__main__":
-    state = State()
-    for proc in psutil.process_iter(["pid", "name"]):
-        process_info = ProcessBase(
-            pid=proc.info["pid"],
-            host=os.uname().nodename,
-            name=proc.info["name"],
-            log="",
-            commands=[],
-            auto_start=False,
-            status="running",
-            technology="",
-            size=round(proc.memory_info().rss / 1024 / 1024, 1),
-        )
-        state.add(process_info)
-
-    pprint(state.processes)
