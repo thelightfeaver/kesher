@@ -17,3 +17,5 @@ class ProcessBase:
     technology: str
     size: int
     status: str
+    start_time: str
+    version_interpreter: str
