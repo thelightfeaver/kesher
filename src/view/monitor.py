@@ -6,7 +6,6 @@ from textual.widgets import DataTable, Footer, Header
 from core.process import Process
 
 
-
 class KesherMenu(App):
     CSS = """
     DataTable {
@@ -34,7 +33,6 @@ class KesherMenu(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        
         yield Container(
             DataTable(id="process-table", cursor_type="row"),
             id="main-container",
@@ -56,7 +54,6 @@ class KesherMenu(App):
         )
 
         self.load_processes()
-        self.set_interval(2, self.load_processes)
 
     def load_processes(self) -> None:
         """Load and display all processes in the table."""
@@ -110,7 +107,6 @@ class KesherMenu(App):
         if not self._ensure_selected():
             return
         self.process_manager.delete(self.selected_pid)
-        self.selected_pid = None
         self.load_processes()
         self.notify("Process deleted")
 
