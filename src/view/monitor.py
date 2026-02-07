@@ -15,12 +15,18 @@ class KesherMenu(App):
     #process-table {
         border: solid $primary;
     }
+
+    #log-view {
+        height: 30%;
+        border: solid $primary;
+    }
     """
 
     BINDINGS = [
         Binding(key="s", action="stop", description="Stop"),
         Binding(key="r", action="restart", description="Restart"),
         Binding(key="d", action="delete", description="Delete"),
+        Binding(key="l", action="log", description="Show Log"),
         Binding(key="f", action="refresh", description="Refresh"),
         Binding(key="q", action="quit", description="Quit"),
     ]
@@ -56,7 +62,12 @@ class KesherMenu(App):
 
         self.load_processes()
 
-        self.set_interval(2, self.action_log)
+        self.set_interval(
+            interval=1,
+            callback=self.action_log,
+            name="log_refresh",
+            pause=False
+        )
 
     def load_processes(self) -> None:
         """Load and display all processes in the table."""
@@ -79,6 +90,9 @@ class KesherMenu(App):
                 key=str(pid),
             )
 
+        self.query_one("#log-view", Log).clear()
+        self.selected_pid = None
+
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         """Track selected PID for actions."""
         self.selected_pid = event.row_key.value
@@ -86,7 +100,6 @@ class KesherMenu(App):
     def _ensure_selected(self) -> bool:
         if self.selected_pid:
             return True
-        self.notify("No process selected", severity="warning")
         return False
 
     def action_stop(self) -> None:
@@ -121,7 +134,7 @@ class KesherMenu(App):
             with open(data.get("log"), "r") as log_file:
                 log_content = log_file.read().replace("None", "")
                 log_widget.write(log_content)
-
+        
     def action_refresh(self) -> None:
         """Manually refresh the process list."""
         self.load_processes()
