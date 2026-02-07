@@ -2,7 +2,7 @@
 
 import click
 
-from view.monitor import KesherMenu
+from view.monitor import KesherTUI
 
 from .engine import delete as delete_app
 from .engine import log as log_app
@@ -57,7 +57,7 @@ def log(id):
 
 @click.command()
 def monitor():
-    KesherMenu().run()
+    KesherTUI().run()
 
 
 cli.add_command(start)

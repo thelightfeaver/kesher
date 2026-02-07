@@ -6,7 +6,7 @@ from textual.widgets import DataTable, Footer, Header, Log
 from core.process import Process
 
 
-class KesherMenu(App):
+class KesherTUI(App):
     CSS = """
     DataTable {
         height: 1fr;
