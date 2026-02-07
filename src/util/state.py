@@ -31,6 +31,8 @@ class State:
         if os.path.exists(self._state_file):
             with open(self._state_file, "r") as file:
                 self.processes = json.load(file)
+        else:
+            self.processes = {}
 
     def search(self, key: str) -> dict[str, ProcessBase]:
         """
@@ -50,7 +52,7 @@ class State:
         print(f"Key: {key} not found in state.")
         return {}
 
-    def update(self, key: str, value: dict):
+    def update(self, key: str, field: str, value: str):
         """
         Update the state with a new key-value pair.
         Args:
@@ -59,7 +61,7 @@ class State:
         """
 
         if key in self.processes.keys():
-            self.processes[key] = value
+            self.processes[key][field] = value
             self.save()
 
     def delete(self, key: str):
