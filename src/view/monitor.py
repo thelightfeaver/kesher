@@ -43,6 +43,9 @@ class KesherMenu(App):
             id="main-container",
             markup=True,
         )
+        yield Container(
+                DataTable(id="resource-table", cursor_type="line"),
+                id="resource-container",markup=True)
         yield Log(id="log-view", highlight=True)
         yield Footer(show_command_palette=False, compact=True)
 
@@ -139,3 +142,11 @@ class KesherMenu(App):
         """Manually refresh the process list."""
         self.load_processes()
         self.notify("Process list refreshed")
+
+    def action_delete(self) -> None:
+        """Delete the selected process."""
+        if not self._ensure_selected():
+            return
+        self.process_manager.delete(self.selected_pid)
+        self.load_processes()
+        self.notify(f"Process {self.selected_pid} deleted")
