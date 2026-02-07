@@ -47,6 +47,7 @@ class State:
         Returns:
             The value associated with the key, or an empty dictionary if not found.
         """
+        self.load()
         if key == "all":
             return self.processes.copy()
 

@@ -44,8 +44,10 @@ class KesherMenu(App):
             markup=True,
         )
         yield Container(
-                DataTable(id="resource-table", cursor_type="line"),
-                id="resource-container",markup=True)
+            DataTable(id="resource-table", cursor_type="line"),
+            id="resource-container",
+            markup=True,
+        )
         yield Log(id="log-view", highlight=True)
         yield Footer(show_command_palette=False, compact=True)
 
@@ -63,19 +65,27 @@ class KesherMenu(App):
             "Memory (MB)",
         )
 
+        resource_table = self.query_one("#resource-table", DataTable)
+        resource_table.add_columns("Key", "Value")
+
         self.load_processes()
 
         self.set_interval(
             interval=1,
             callback=self.action_log,
             name="log_refresh",
-            pause=False
+        )
+
+        self.set_interval(
+            interval=0.1,
+            callback=self.load_resource,
+            name="resource_refresh",
         )
 
     def load_processes(self) -> None:
         """Load and display all processes in the table."""
-        table = self.query_one("#process-table", DataTable)
-        table.clear()
+        process_table = self.query_one("#process-table", DataTable)
+        process_table.clear()
 
         all_processes = self.process_manager.state.search("all")
         if not all_processes:
@@ -83,7 +93,7 @@ class KesherMenu(App):
 
         for pid, info in all_processes.items():
             status_style = "green" if info["status"] == "running" else "red"
-            table.add_row(
+            process_table.add_row(
                 str(pid),
                 info["name"],
                 f"[{status_style}]{info['status']}[/{status_style}]",
@@ -137,11 +147,11 @@ class KesherMenu(App):
             with open(data.get("log"), "r") as log_file:
                 log_content = log_file.read().replace("None", "")
                 log_widget.write(log_content)
-        
+
     def action_refresh(self) -> None:
         """Manually refresh the process list."""
         self.load_processes()
-        self.notify("Process list refreshed")
+        self.notify("Process list refreshed", timeout=0.2)
 
     def action_delete(self) -> None:
         """Delete the selected process."""
@@ -150,3 +160,11 @@ class KesherMenu(App):
         self.process_manager.delete(self.selected_pid)
         self.load_processes()
         self.notify(f"Process {self.selected_pid} deleted")
+
+    def load_resource(self) -> None:
+        """Load and display resource usage for the selected process."""
+        resource_table = self.query_one("#resource-table", DataTable)
+        resource_table.clear()
+
+        for key, value in self.process_manager.get_resources().items():
+            resource_table.add_row(key, str(value))

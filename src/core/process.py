@@ -227,12 +227,9 @@ class Process:
         ram = psutil.virtual_memory()
         total_ram_gb = round(ram.total / (1024**3), 2)
         used_ram_gb = round(ram.used / (1024**3), 2)
-        ram_usage_percent = ram.percent
 
         return {
-            "cpu_usage": cpu_usage,
-            "cpu_count": cpu_count,
-            "total_ram_gb": total_ram_gb,
-            "used_ram_gb": used_ram_gb,
-            "ram_usage_percent": ram_usage_percent,
+            "CPU Usage": str(cpu_usage) + "%",
+            "CPU Cores": cpu_count,
+            "RAM": str(used_ram_gb) + " /" + str(total_ram_gb) + " GB",
         }
