@@ -137,7 +137,7 @@ class Process:
         log_folder = os.path.join(".logs")
         os.makedirs(log_folder, exist_ok=True)
 
-    def log(self, id: str) -> str|None:
+    def log(self, id: str) -> str | None:
         """
         Retrieve and print the log of a specific process by its PID.
         Args:
