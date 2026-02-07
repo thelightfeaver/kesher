@@ -37,7 +37,6 @@ class State:
         except json.JSONDecodeError:
             with open(self._state_file, "w") as file:
                 json.dump(self.processes, indent=4)
-            
 
     def search(self, key: str) -> dict[str, ProcessBase]:
         """

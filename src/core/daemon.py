@@ -1,8 +1,8 @@
 """Daemon class to monitor and manage processes."""
 
 import asyncio
-import sys
 import os
+import sys
 
 import psutil
 import uvloop
@@ -34,7 +34,9 @@ class Daemon:
             for pid, info in processes.items():
                 if psutil.pid_exists(int(pid)):
                     print(f"Process {info['name']} with PID {pid} is running.")
-                elif not psutil.pid_exists(int(pid)) and bool(info["auto_start"]) == True:
+                elif (
+                    not psutil.pid_exists(int(pid)) and bool(info["auto_start"]) == True
+                ):
                     print(
                         f"Process {info['name']} with PID {pid} has stopped. Restarting..."
                     )
@@ -45,7 +47,6 @@ class Daemon:
                         technology=info["technology"],
                     )
                     process_manager.state.delete(pid)
-                
 
             await asyncio.sleep(1)  # Monitor every 10 seconds
 

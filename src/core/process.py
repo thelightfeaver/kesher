@@ -15,6 +15,7 @@ from util.state import State
 
 class Process:
     """Class to manage system processes."""
+
     def __init__(self) -> None:
         self.state = State()
         self._create_folder_log()
