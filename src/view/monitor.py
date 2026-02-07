@@ -20,6 +20,11 @@ class KesherTUI(App):
         height: 30%;
         border: solid $primary;
     }
+
+    #resource-container {
+        height: 20%;
+        border: solid $primary;
+    }
     """
 
     BINDINGS = [
@@ -43,12 +48,12 @@ class KesherTUI(App):
             id="main-container",
             markup=True,
         )
+        yield Log(id="log-view", highlight=True)
         yield Container(
             DataTable(id="resource-table", cursor_type="line"),
             id="resource-container",
             markup=True,
         )
-        yield Log(id="log-view", highlight=True)
         yield Footer(show_command_palette=False, compact=True)
 
     def on_mount(self) -> None:
@@ -64,12 +69,13 @@ class KesherTUI(App):
             "Technology",
             "Memory (MB)",
         )
+        self.load_processes()
 
         resource_table = self.query_one("#resource-table", DataTable)
         resource_table.add_columns("Key", "Value")
 
-        self.load_processes()
-
+        self.load_resource()
+        
         self.set_interval(
             interval=1,
             callback=self.action_log,
