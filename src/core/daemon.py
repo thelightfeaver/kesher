@@ -1,5 +1,4 @@
 import asyncio
-import os
 
 import psutil
 import uvloop
@@ -15,7 +14,7 @@ class Daemon:
         while True:
             # Initialize Process manager
             process_manager = Process()
-            processes = process_manager.info_process.copy()
+            processes = process_manager.state.processes.copy()
 
             # If there are no processes, wait and continue
             if not processes:
@@ -35,14 +34,13 @@ class Daemon:
                         auto_start=info["auto_start"],
                         technology=info["technology"],
                     )
-                    del process_manager.info_process[pid]
-                    process_manager._save_data()
+                    process_manager.state.delete(pid)
                 # Check if process is stopped but is marked as running
                 # TODO: IMPROVE THIS CHECK
                 elif not psutil.pid_exists(int(pid)) and info["status"] == "running":
                     print(f"Process {info['name']} with PID {pid} has stopped.")
-                    del process_manager.info_process[pid]
-                    process_manager._save_data()
+                    process_manager.state.delete(pid)
+                    
                 else:
                     print(f"Process {info['name']} with PID {pid} is running.")
                     continue
