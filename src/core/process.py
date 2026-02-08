@@ -79,7 +79,7 @@ class Process:
         """
         data = self.state.search(id)
         if data == {}:
-            print(f"No process found with PID {id}.")
+            print("No process found")
             return
 
         for pid, _ in data.items():
@@ -92,7 +92,7 @@ class Process:
                 self.state.update(pid, "status", "stopped")
             except psutil.NoSuchProcess:
                 self.state.update(pid, "status", "stopped")
-                print(f"No process found with PID {pid}.")
+                print("No process found.")
             except psutil.TimeoutExpired:
                 print(f"Process with PID {pid} did not stop in time; killing it.")
                 proc.kill()
