@@ -22,15 +22,13 @@ class Process:
 
     def start(
         self, commands: list[str], name=str | None, auto_start=False, technology=None
-    ) -> subprocess.Popen:
+    ) -> None:
         """
         Execute a system command and return the running process.
         Args:
             commands (list[str]): The command and its arguments to execute.
             name (str | None): Optional name for the process.
             auto_start (bool): Flag to enable auto-start for the process.
-        Returns:
-            subprocess.Popen: The running process object.
         """
         temp_name = (
             name
@@ -72,7 +70,6 @@ class Process:
             )
         )
         print(f"Process started with PID: {process.pid} and Name: {temp_name}")
-        return process
 
     def stop(self, id: str) -> None:
         """
