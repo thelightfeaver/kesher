@@ -32,7 +32,10 @@ class Daemon:
 
             # Check each process status and restart if necessary
             for pid, info in processes.items():
-                if psutil.pid_exists(int(pid)):
+                if (
+                    psutil.pid_exists(int(pid))
+                    and psutil.Process(int(pid)).is_running()
+                ):
                     print(f"Process {info['name']} with PID {pid} is running.")
                 elif not psutil.pid_exists(int(pid)) and bool(info["auto_start"]):
                     print(
@@ -46,7 +49,13 @@ class Daemon:
                     )
                     process_manager.state.delete(pid)
 
-            await asyncio.sleep(1)  # Monitor every 10 seconds
+                elif not psutil.pid_exists(int(pid)) and info["status"] == "running":
+                    print(
+                        f"Process {info['name']} with PID {pid} has stopped. Auto-start is disabled."
+                    )
+                    process_manager.state.delete(pid)
+
+            await asyncio.sleep(1)
 
     def run(self):
         """Run the daemon to monitor processes."""
