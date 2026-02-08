@@ -3,6 +3,8 @@ import subprocess
 
 from command import Command
 
+from util import clean_state
+
 
 def test_start_process(python_venv):
     # Test that the process starts successfully
@@ -18,3 +20,6 @@ def test_start_process(python_venv):
     )
     assert app_name in result.stdout, "CLI output did not include the process name"
     assert app_name == process_info["name"], "Process haven't started successfully"
+
+    # Clean up:
+    clean_state(process_info["pid"])
