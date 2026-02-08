@@ -82,7 +82,7 @@ class Process:
             print(f"No process found with PID {id}.")
             return
 
-        for pid, value in data.items():
+        for pid, _ in data.items():
             try:
                 proc = psutil.Process(int(pid))
                 proc.terminate()
@@ -121,16 +121,16 @@ class Process:
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
         table.add_column("Technology", style="magenta")
-        for pid, info in data.items():
-            status_color = "green" if info["status"] == "running" else "red"
+        for pid, value in data.items():
+            status_color = "green" if value["status"] == "running" else "red"
             table.add_row(
                 pid,
-                info["name"],
-                f"[{status_color}]{info['status']}[/{status_color}]",
-                "✓" if info["auto_start"] else "✗",
-                " ".join(info["commands"]),
-                str(info["size"]),
-                info["technology"] if info["technology"] else "N/A",
+                value["name"],
+                f"[{status_color}]{value['status']}[/{status_color}]",
+                "✓" if value["auto_start"] else "✗",
+                " ".join(value["commands"]),
+                str(value["size"]),
+                value["technology"] if value["technology"] else "N/A",
             )
 
         console.print(table)
