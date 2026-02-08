@@ -22,7 +22,7 @@ class Daemon:
         while True:
             # Initialize Process manager
             process_manager = Process()
-            processes = process_manager.state.processes.copy()
+            processes = process_manager.state.search("all")
 
             # If there are no processes, wait and continue
             if not processes:
@@ -32,15 +32,16 @@ class Daemon:
 
             # Check each process status and restart if necessary
             for pid, info in processes.items():
-                if psutil.pid_exists(int(pid)):
-                    print(f"Process {info['name']} with PID {pid} is running.")
-                elif (
-                    not psutil.pid_exists(int(pid)) and bool(info["auto_start"]) == True
+                if (
+                    psutil.pid_exists(int(pid))
+                    and psutil.Process(int(pid)).is_running()
                 ):
+                    print(f"Process {info['name']} with PID {pid} is running.")
+                elif not psutil.pid_exists(int(pid)) and bool(info["auto_start"]):
                     print(
                         f"Process {info['name']} with PID {pid} has stopped. Restarting..."
                     )
-                    process_manager.execute(
+                    process_manager.start(
                         commands=info["commands"],
                         name=info["name"],
                         auto_start=info["auto_start"],
@@ -48,7 +49,13 @@ class Daemon:
                     )
                     process_manager.state.delete(pid)
 
-            await asyncio.sleep(1)  # Monitor every 10 seconds
+                elif not psutil.pid_exists(int(pid)) and info["status"] == "running":
+                    print(
+                        f"Process {info['name']} with PID {pid} has stopped. Auto-start is disabled."
+                    )
+                    process_manager.state.delete(pid)
+
+            await asyncio.sleep(1)
 
     def run(self):
         """Run the daemon to monitor processes."""

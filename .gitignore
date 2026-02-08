@@ -24,3 +24,15 @@ data.json
 .logs/
 *.log
 *.json
+
+# dist
+dist/
+*.spec
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.obj
+*.lib
+*.o

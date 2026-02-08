@@ -13,7 +13,7 @@ class Environment:
     def __init__(self, file_path: str) -> None:
         self.venv_path = self._get_environments_exists()
         self.api_type = self._determine_technology(file_path)
-        self.file_path = None if self.api_type == None else file_path
+        self.file_path = file_path if self.api_type else None
 
     def _get_environments_exists(self) -> str:
         for env in self.ENVS:

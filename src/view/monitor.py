@@ -111,6 +111,9 @@ class KesherTUI(App):
 
         self.query_one("#log-view", Log).clear()
         self.selected_pid = None
+        log = self.query_one("#log-view", Log)
+        log.clear()
+        log.clear_cached_dimensions()
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         """Track selected PID for actions."""

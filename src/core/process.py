@@ -22,15 +22,13 @@ class Process:
 
     def start(
         self, commands: list[str], name=str | None, auto_start=False, technology=None
-    ) -> subprocess.Popen:
+    ) -> None:
         """
         Execute a system command and return the running process.
         Args:
             commands (list[str]): The command and its arguments to execute.
             name (str | None): Optional name for the process.
             auto_start (bool): Flag to enable auto-start for the process.
-        Returns:
-            subprocess.Popen: The running process object.
         """
         temp_name = (
             name
@@ -72,7 +70,6 @@ class Process:
             )
         )
         print(f"Process started with PID: {process.pid} and Name: {temp_name}")
-        return process
 
     def stop(self, id: str) -> None:
         """
@@ -85,7 +82,7 @@ class Process:
             print(f"No process found with PID {id}.")
             return
 
-        for pid, value in data.items():
+        for pid, _ in data.items():
             try:
                 proc = psutil.Process(int(pid))
                 proc.terminate()
@@ -108,7 +105,7 @@ class Process:
             id (str): The PID of the process to retrieve information for.
         """
         data = self.state.search(id)
-        if data is None:
+        if data == {}:
             print(f"No process found with PID {id}.")
             return
 
@@ -124,16 +121,16 @@ class Process:
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
         table.add_column("Technology", style="magenta")
-        for pid, info in data.items():
-            status_color = "green" if info["status"] == "running" else "red"
+        for pid, value in data.items():
+            status_color = "green" if value["status"] == "running" else "red"
             table.add_row(
                 pid,
-                info["name"],
-                f"[{status_color}]{info['status']}[/{status_color}]",
-                "✓" if info["auto_start"] else "✗",
-                " ".join(info["commands"]),
-                str(info["size"]),
-                info["technology"] if info["technology"] else "N/A",
+                value["name"],
+                f"[{status_color}]{value['status']}[/{status_color}]",
+                "✓" if value["auto_start"] else "✗",
+                " ".join(value["commands"]),
+                str(value["size"]),
+                value["technology"] if value["technology"] else "N/A",
             )
 
         console.print(table)
@@ -200,7 +197,7 @@ class Process:
             id (str): The PID of the process to delete.
         """
         data = self.state.search(id)
-        if data is None or data is {}:
+        if data is None or data == {}:
             print(f"No process found with PID {id}.")
             return
 
