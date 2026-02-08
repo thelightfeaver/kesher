@@ -105,7 +105,7 @@ class Process:
             id (str): The PID of the process to retrieve information for.
         """
         data = self.state.search(id)
-        if data is None:
+        if data == {}:
             print(f"No process found with PID {id}.")
             return
 
