@@ -36,7 +36,7 @@ class State:
             with open(self._state_file, "w") as file:
                 json.dump(self.processes, indent=4)
 
-    def search(self, key: str) -> dict[str, ProcessBase]:
+    def search(self, id: str) -> dict[str, ProcessBase]:
         """
         Search for a specific key in the state.
         Args:
@@ -45,11 +45,11 @@ class State:
             The value associated with the key, or an empty dictionary if not found.
         """
         self.load()
-        if key == "all":
+        if id == "all":
             return self.processes.copy()
 
-        for id, value in self.processes.items():
-            if key == str(id) or value["name"] == key:
+        for key, value in self.processes.items():
+            if key == id or value["name"] == id:
                 return dict({key: value})
 
         print(f"Key: {key} not found in state.")
