@@ -1,3 +1,5 @@
+"""This module defines the ProcessBase class, which serves as a base for process management."""
+
 from dataclasses import dataclass
 
 
