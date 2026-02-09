@@ -4,11 +4,17 @@ import psutil
 from faker import Faker
 
 
-def clean_state(pid: int) -> None:
+def clean_state() -> None:
+    with open("./state.json", "r") as f:
+        state = json.load(f)
+
+    pid = next(iter(state.values()), None)["pid"]
+
     if psutil.pid_exists(pid):
         p = psutil.Process(pid)
         p.terminate()
         p.wait(timeout=3)
+
     with open("./state.json", "w") as f:
         json.dump({}, f)
 

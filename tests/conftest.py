@@ -5,3 +5,11 @@ import pytest
 def python_venv():
     venv = ".venv/bin/python"
     return venv
+
+
+@pytest.fixture(autouse=True)
+def clean_state_before_each_test():
+    from util import clean_state
+
+    yield
+    clean_state()
