@@ -8,15 +8,16 @@ def clean_state() -> None:
     with open("./state.json", "r") as f:
         state = json.load(f)
 
-    pid = next(iter(state.values()), None)["pid"]
+    value = next(iter(state.values()), None)
+    if value is not None:
+        pid = value["pid"]
+        if psutil.pid_exists(pid):
+            p = psutil.Process(pid)
+            p.terminate()
+            p.wait(timeout=3)
 
-    if psutil.pid_exists(pid):
-        p = psutil.Process(pid)
-        p.terminate()
-        p.wait(timeout=3)
-
-    with open("./state.json", "w") as f:
-        json.dump({}, f)
+        with open("./state.json", "w") as f:
+            json.dump({}, f)
 
 
 def read_state(path) -> any:

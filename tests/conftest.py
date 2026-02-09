@@ -11,5 +11,6 @@ def python_venv():
 def clean_state_before_each_test():
     from util import clean_state
 
+    clean_state()
     yield
     clean_state()
