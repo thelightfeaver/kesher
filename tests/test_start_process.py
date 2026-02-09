@@ -16,5 +16,5 @@ def test_start_process(python_venv):
     assert "Process started with PID" in result.stdout, (
         "CLI output did not confirm process start"
     )
-    # assert app_name in result.stdout, "CLI output did not include the process name"
+    assert app_name in result.stdout, "CLI output did not include the process name"
     assert app_name == process_info["name"], "Process haven't started successfully"
