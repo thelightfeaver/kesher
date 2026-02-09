@@ -1,3 +1,5 @@
+"""This module defines the core engine for managing processes based on the environment configuration."""
+
 from util.environment import Environment
 
 from .process import Process

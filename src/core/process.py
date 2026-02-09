@@ -78,8 +78,8 @@ class Process:
             id (str): The PID of the process to stop.
         """
         data = self.state.search(id)
-        if not data:
-            print(f"No process found with PID {id}.")
+        if data == {}:
+            print("No process found")
             return
 
         for pid, _ in data.items():
@@ -92,7 +92,7 @@ class Process:
                 self.state.update(pid, "status", "stopped")
             except psutil.NoSuchProcess:
                 self.state.update(pid, "status", "stopped")
-                print(f"No process found with PID {pid}.")
+                print("No process found.")
             except psutil.TimeoutExpired:
                 print(f"Process with PID {pid} did not stop in time; killing it.")
                 proc.kill()
@@ -151,17 +151,17 @@ class Process:
 
         # Get log path from state
         data = self.state.search(id)
+        if data == {}:
+            return
+
         data = next(iter(data.values()), None)
 
-        if data != {}:
-            log_path = data.get("log")
-            if log_path and os.path.exists(log_path):
-                with open(log_path, "r") as log_file:
-                    print(log_file.read().replace("None", ""))
-            else:
-                print(f"No log file found for process with PID {id}.")
+        log_path = data.get("log")
+        if log_path and os.path.exists(log_path):
+            with open(log_path, "r") as log_file:
+                print(log_file.read().replace("None", ""))
         else:
-            print(f"No process found with PID {id}.")
+            print("No log file found.")
 
     def restart(self, id: str) -> None:
         """
@@ -170,7 +170,7 @@ class Process:
             id (str): The PID of the process to restart.
         """
         data = self.state.search(id)
-        if data is None:
+        if data == {}:
             print(f"No process found with PID {id}.")
             return
 
@@ -197,8 +197,8 @@ class Process:
             id (str): The PID of the process to delete.
         """
         data = self.state.search(id)
-        if data is None or data == {}:
-            print(f"No process found with PID {id}.")
+        if data == {}:
+            print("No process found for deletion.")
             return
 
         if data:
