@@ -14,9 +14,10 @@ def test_status_process(python_venv):
     assert "Process started with PID" in result.stdout, (
         "CLI output did not confirm process start"
     )
-
+    # Read state
     state = read_state("./state.json")
     process_info = next(iter(state.values()), None)
+
     # Check the status of the process
     command_status = cmd.status(app_name)
     result = subprocess.run(command_status, capture_output=True, text=True, check=True)
