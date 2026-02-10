@@ -22,8 +22,11 @@ def cli():
 @click.argument("path", type=str)
 @click.option("--name", type=str, default=None, help="Name of the process")
 @click.option("--auto-start", is_flag=True, help="Enable auto-start for the process")
-def start(path, name, auto_start):
-    start_app(path, name, auto_start)
+@click.option(
+    "--venv", type=str, default=None, help="Path to a Python virtual environment"
+)
+def start(path, name, auto_start, venv):
+    start_app(path, name, auto_start, venv)
 
 
 @click.command(help="Stop a running process")
