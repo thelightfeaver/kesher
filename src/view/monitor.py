@@ -131,7 +131,7 @@ class KesherTUI(App):
             return
         self.process_manager.stop(self.selected_pid)
         self.load_processes()
-        self.notify(f"Process {self.selected_pid} stopped")
+        self.notify(f"Process {self.selected_pid} stopped", timeout=0.2)
 
     def action_restart(self) -> None:
         """Restart the selected process."""
@@ -139,7 +139,7 @@ class KesherTUI(App):
             return
         self.process_manager.restart(self.selected_pid)
         self.load_processes()
-        self.notify(f"Process {self.selected_pid} restarted")
+        self.notify(f"Process {self.selected_pid} restarted", timeout=0.2)
 
     def load_log(self) -> None:
         """Show log for the selected process."""
@@ -169,7 +169,7 @@ class KesherTUI(App):
             return
         self.process_manager.delete(self.selected_pid)
         self.load_processes()
-        self.notify(f"Process {self.selected_pid} deleted")
+        self.notify(f"Process {self.selected_pid} deleted", timeout=0.2)
         self.selected_pid = None
         self.query_one("#log-view", Log).clear()
 
