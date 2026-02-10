@@ -120,6 +120,7 @@ class KesherTUI(App):
         self.selected_pid = event.row_key.value
 
     def _ensure_selected(self) -> bool:
+        """Ensure a process is selected before performing actions."""
         if self.selected_pid:
             return True
         return False
@@ -169,6 +170,8 @@ class KesherTUI(App):
         self.process_manager.delete(self.selected_pid)
         self.load_processes()
         self.notify(f"Process {self.selected_pid} deleted")
+        self.selected_pid = None
+        self.query_one("#log-view", Log).clear()
 
     def load_resource(self) -> None:
         """Load and display resource usage for the selected process."""
