@@ -21,13 +21,13 @@ uv pip install .
 ### Start a process
 
 ```bash
-kesher start <path> [--name NAME] [--auto-start]
+kesher start <path> [--name NAME] [--venv VENV_PATH] [--auto-start]
 ```
 
 Options:
 - `--name`: Name of the process
-- `--auto-start`: Enable auto-start for the process
 - `--venv`:Path to a Python virtual environment
+- `--auto-start`: Enable auto-start for the process
 
 ### Stop a process
 
