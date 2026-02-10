@@ -25,8 +25,9 @@ kesher start <path> [--name NAME] [--auto-start]
 ```
 
 Options:
-- `--name`: Custom name for the process
+- `--name`: Name of the process
 - `--auto-start`: Enable auto-start for the process
+- `--venv`:Path to a Python virtual environment
 
 ### Stop a process
 
