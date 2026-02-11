@@ -1,6 +1,44 @@
 # CHANGELOG
 
 
+## v0.2.0 (2026-02-10)
+
+### Bug Fixes
+
+- Clean selected_pid then and aprove search state
+  ([`75c86db`](https://github.com/thelightfeaver/kesher/commit/75c86dbbdde91548d74c4d19d64cdce93b25def3))
+
+### Chores
+
+- Remove pytest-html dependency and related configuration
+  ([`121f3ee`](https://github.com/thelightfeaver/kesher/commit/121f3eeeb63e6edc8cae1bfef3e9e2088d1d3d74))
+
+- Update .gitignore to include coverage report files
+  ([`93f483a`](https://github.com/thelightfeaver/kesher/commit/93f483a04c28b1595dd379799dc1cd0331c4f968))
+
+### Documentation
+
+- Clarify process name option and add virtual environment path option
+  ([`ed0cde2`](https://github.com/thelightfeaver/kesher/commit/ed0cde2e6b8de2fa229bc88bd098ffadfa3e2bdd))
+
+- Update installation instructions for virtual environment setup
+  ([`5cccd3e`](https://github.com/thelightfeaver/kesher/commit/5cccd3e05cc961df4315f818c81866c2ab4bb3f2))
+
+- Update start command options to include virtual environment path
+  ([`ce9837b`](https://github.com/thelightfeaver/kesher/commit/ce9837bba8f4b73de17294fcf57040af70c7a80b))
+
+### Features
+
+- Add pytest-html dependency and configuration for test reporting
+  ([`c6bb2b0`](https://github.com/thelightfeaver/kesher/commit/c6bb2b0f93dd682701e2c7acbd6821a6c9a6b51e))
+
+- Add support for virtual environment path in start command
+  ([`a3a9f49`](https://github.com/thelightfeaver/kesher/commit/a3a9f49d5562f9f7f936ff5cc3651fdb0131f24f))
+
+- Add support for Windows Python executable in environment configurations
+  ([`4ba4201`](https://github.com/thelightfeaver/kesher/commit/4ba42013ac67be8b0dad6f0dabe7f9d675fd5d54))
+
+
 ## v0.1.0 (2026-02-08)
 
 ### Bug Fixes
