@@ -77,13 +77,13 @@ class KesherTUI(App):
         self.load_resource()
 
         self.set_interval(
-            interval=1,
+            interval=2,
             callback=self.load_log,
             name="log_refresh",
         )
 
         self.set_interval(
-            interval=0.1,
+            interval=3,
             callback=self.load_resource,
             name="resource_refresh",
         )
@@ -122,7 +122,10 @@ class KesherTUI(App):
     def _ensure_selected(self) -> bool:
         """Ensure a process is selected before performing actions."""
         if self.selected_pid:
-            return True
+            if self.process_manager.state.search(self.selected_pid):
+                return True
+            else:
+                return False
         return False
 
     def action_stop(self) -> None:
@@ -168,12 +171,11 @@ class KesherTUI(App):
         if not self._ensure_selected():
             return
         self.process_manager.delete(self.selected_pid)
-        self.load_processes()
         self.notify(f"Process {self.selected_pid} deleted", timeout=0.2)
-        self.selected_pid = None
+        self.load_processes()
         self.query_one("#log-view", Log).clear()
 
-    def load_resource(self) -> None:
+    async def load_resource(self) -> None:
         """Load and display resource usage for the selected process."""
         resource_table = self.query_one("#resource-table", DataTable)
         resource_table.clear()
