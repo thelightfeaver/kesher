@@ -36,3 +36,7 @@ dist/
 *.obj
 *.lib
 *.o
+
+# coverage reports
+report.html
+*.css

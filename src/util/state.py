@@ -44,6 +44,11 @@ class State:
         Returns:
             The value associated with the key, or an empty dictionary if not found.
         """
+
+        if not id:
+            print("No ID provided for search.")
+            return {}
+
         self.load()
         if id == "all":
             return self.processes.copy()
@@ -51,9 +56,6 @@ class State:
         for key, value in self.processes.items():
             if key == id or value["name"] == id:
                 return dict({key: value})
-
-        print(f"Key: {key} not found in state.")
-        return {}
 
     def update(self, key: str, field: str, value: str):
         """

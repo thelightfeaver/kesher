@@ -4,25 +4,26 @@ import sys
 
 class Environment:
     ENVS = [
-        "venv/bin/python",
-        "venv/bin/python3",
-        ".venv/bin/python3",
-        ".venv/bin/python",
+        "bin/python",
+        "bin/python3",
+        "scripts/python.exe",
     ]
 
-    def __init__(self, file_path: str) -> None:
-        self.venv_path = self._get_environments_exists()
+    def __init__(self, file_path: str, venv: str | None = None) -> None:
+        self.venv_path = self._get_environments_exists(venv)
         self.api_type = self._determine_technology(file_path)
         self.file_path = file_path if self.api_type else None
 
-    def _get_environments_exists(self) -> str:
-        for env in self.ENVS:
-            cwd = os.getcwd()
-            full_path = os.path.join(cwd, env)
-            if os.path.exists(full_path):
-                return full_path
+    def _get_environments_exists(self, venv: str | None = None) -> str:
+        if not venv:
+            return sys.executable
 
-        return sys.executable
+        else:
+            for env in self.ENVS:
+                env_path = os.path.join(venv, env)
+                if os.path.exists(env_path):
+                    return env_path
+            return None
 
     def _determine_technology(self, file_path: str) -> str:
         if os.path.exists(file_path):

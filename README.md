@@ -11,7 +11,9 @@
 ## Installation
 
 ```bash
-pip install -e .
+uv venv
+source .venv/bin/activate
+uv pip install .
 ```
 
 ## Commands
@@ -19,11 +21,12 @@ pip install -e .
 ### Start a process
 
 ```bash
-kesher start <path> [--name NAME] [--auto-start]
+kesher start <path> [--name NAME] [--venv VENV_PATH] [--auto-start]
 ```
 
 Options:
-- `--name`: Custom name for the process
+- `--name`: Name of the process
+- `--venv`:Path to a Python virtual environment
 - `--auto-start`: Enable auto-start for the process
 
 ### Stop a process
