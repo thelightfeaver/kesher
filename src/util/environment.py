@@ -6,6 +6,7 @@ class Environment:
     ENVS = [
         "bin/python",
         "bin/python3",
+        "scripts/python.exe",
     ]
 
     def __init__(self, file_path: str, venv: str | None = None) -> None:
