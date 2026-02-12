@@ -126,12 +126,20 @@ class Process:
         """
         data = self.state.search(id)
         if data == {}:
-            print(f"No process found with PID {id}.")
+            show_message(
+                f"No process found with PID {id}.",
+                title="Warning",
+                message_type=MessageType.WARNING,
+            )
             return
 
         console = Console()
         table = Table(
-            title="Process Information", show_header=True, header_style="bold magenta"
+            title="Process Information",
+            show_header=True,
+            header_style="bold magenta",
+            border_style="bright_blue",
+            highlight=True,
         )
 
         table.add_column("PID", style="cyan", justify="right")
@@ -141,6 +149,8 @@ class Process:
         table.add_column("Commands", style="blue")
         table.add_column("Memory (MB)", justify="right")
         table.add_column("Technology", style="magenta")
+        table.add_column("Start Time", style="white")
+        table.add_column("Version", style="white")
         for pid, value in data.items():
             status_color = "green" if value["status"] == "running" else "red"
             table.add_row(
@@ -151,6 +161,8 @@ class Process:
                 " ".join(value["commands"]),
                 str(value["size"]),
                 value["technology"] if value["technology"] else "N/A",
+                value.get("start_time", "N/A"),
+                value.get("version_interpreter", "N/A"),
             )
 
         console.print(table)
