@@ -140,6 +140,7 @@ class Process:
             header_style="bold magenta",
             border_style="bright_blue",
             highlight=True,
+            expand=True,
         )
 
         table.add_column("PID", style="cyan", justify="right")
