@@ -1,3 +1,5 @@
+"""KesherTUI - A Textual User Interface for Monitoring Application Processes"""
+
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
