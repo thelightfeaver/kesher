@@ -57,6 +57,8 @@ class State:
             if key == id or value["name"] == id:
                 return dict({key: value})
 
+        return {}
+
     def update(self, key: str, field: str, value: str):
         """
         Update the state with a new key-value pair.

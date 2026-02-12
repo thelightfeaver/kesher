@@ -10,6 +10,8 @@ from rich.console import Console
 from rich.table import Table
 
 from model.process import ProcessBase
+from util.console import show_message
+from util.const import MessageType
 from util.state import State
 
 
@@ -69,7 +71,11 @@ class Process:
                 ),
             )
         )
-        print(f"Process started with PID: {process.pid} and Name: {temp_name}")
+        show_message(
+            f"Process started with PID: {process.pid} and Name: {temp_name}",
+            title="Process Started",
+            message_type=MessageType.SUCCESS,
+        )
 
     def stop(self, id: str) -> None:
         """
@@ -79,7 +85,9 @@ class Process:
         """
         data = self.state.search(id)
         if data == {}:
-            print("No process found")
+            show_message(
+                "No process found", title="Warning", message_type=MessageType.WARNING
+            )
             return
 
         for pid, _ in data.items():
@@ -87,14 +95,26 @@ class Process:
                 proc = psutil.Process(int(pid))
                 proc.terminate()
                 proc.wait(timeout=3)
-                print(f"Process with PID {pid} has been stopped.")
+                show_message(
+                    f"Process with PID {pid} has been stopped.",
+                    title="Process Stopped",
+                    message_type=MessageType.SUCCESS,
+                )
                 #  Update process status in state
                 self.state.update(pid, "status", "stopped")
             except psutil.NoSuchProcess:
                 self.state.update(pid, "status", "stopped")
-                print("No process found.")
+                show_message(
+                    "No process stopped because it does not exist.",
+                    title="Warning",
+                    message_type=MessageType.WARNING,
+                )
             except psutil.TimeoutExpired:
-                print(f"Process with PID {pid} did not stop in time; killing it.")
+                show_message(
+                    f"Process with PID {pid} did not stop in time; killing it.",
+                    title="Warning",
+                    message_type=MessageType.WARNING,
+                )
                 proc.kill()
                 self.state.update(pid, "status", "stopped")
 
@@ -152,6 +172,11 @@ class Process:
         # Get log path from state
         data = self.state.search(id)
         if data == {}:
+            show_message(
+                "No process found with the given PID.",
+                title="Warning",
+                message_type=MessageType.WARNING,
+            )
             return
 
         data = next(iter(data.values()), None)
@@ -161,7 +186,9 @@ class Process:
             with open(log_path, "r") as log_file:
                 print(log_file.read().replace("None", ""))
         else:
-            print("No log file found.")
+            show_message(
+                "No log file found.", title="Error", message_type=MessageType.ERROR
+            )
 
     def restart(self, id: str) -> None:
         """
@@ -171,7 +198,11 @@ class Process:
         """
         data = self.state.search(id)
         if data == {}:
-            print(f"No process found with PID {id}.")
+            show_message(
+                f"No process found with PID {id}.",
+                title="Warning",
+                message_type=MessageType.WARNING,
+            )
             return
 
         if data:
@@ -186,9 +217,17 @@ class Process:
                     value["technology"],
                 )
                 self.state.delete(key)
-                print(f"Process with PID {key} has been restarted.")
+                show_message(
+                    f"Process with PID {key} has been restarted.",
+                    title="Process Restarted",
+                    message_type=MessageType.SUCCESS,
+                )
         else:
-            print("No process will be restarted")
+            show_message(
+                "No process will be restarted",
+                title="Info",
+                message_type=MessageType.INFO,
+            )
 
     def delete(self, id: str) -> None:
         """
@@ -198,7 +237,11 @@ class Process:
         """
         data = self.state.search(id)
         if data == {}:
-            print("No process found for deletion.")
+            show_message(
+                "No process found for deletion.",
+                title="Warning",
+                message_type=MessageType.WARNING,
+            )
             return
 
         if data:
@@ -206,9 +249,17 @@ class Process:
                 if psutil.pid_exists(int(key)):
                     self.stop(key)
                 self.state.delete(key)
-                print(f"Process with PID {key} has been deleted from records.")
+                show_message(
+                    f"Process with PID {key} has been deleted from records.",
+                    title="Process Deleted",
+                    message_type=MessageType.SUCCESS,
+                )
         else:
-            print("No process will be deleted")
+            show_message(
+                "No process will be deleted",
+                title="Info",
+                message_type=MessageType.INFO,
+            )
 
     def get_resources(self) -> dict:
         """Get current system resource usage.
