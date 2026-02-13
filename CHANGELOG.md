@@ -1,6 +1,29 @@
 # CHANGELOG
 
 
+## v0.3.0 (2026-02-13)
+
+### Features
+
+- Add expand at table process
+  ([`061747b`](https://github.com/thelightfeaver/kesher/commit/061747bfbbf23c6f0de22e21e7cff9d01b5583a0))
+
+- Add module docstring for KesherTUI to improve code documentation
+  ([`848e0cc`](https://github.com/thelightfeaver/kesher/commit/848e0ccaf99debeeb04d757e85eeac143b65062b))
+
+- Convert on_mount and load_processes to async for improved performance
+  ([`77fbd17`](https://github.com/thelightfeaver/kesher/commit/77fbd17bcbb98327458e91670a85103bb9d0af5e))
+
+- Enhance process status display with additional columns and improved warning handling
+  ([`d33d1eb`](https://github.com/thelightfeaver/kesher/commit/d33d1eb6b290ce9522e46b9a9d84ee48aa8335ba))
+
+- Implement show_message utility for styled console messages and enhance process feedback
+  ([`328247e`](https://github.com/thelightfeaver/kesher/commit/328247ede06bc3a8bfa5dd2ebb2e95c91590fb2a))
+
+- Replace print statements with show_message for error handling in start function
+  ([`b20d114`](https://github.com/thelightfeaver/kesher/commit/b20d1149a18204eda941a250cea4e830567d91b5))
+
+
 ## v0.2.0 (2026-02-10)
 
 ### Bug Fixes
