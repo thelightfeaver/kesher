@@ -7,10 +7,10 @@ import sys
 import psutil
 import uvloop
 
-# Add src directory to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from core.process import Process
+
+# TODO: CHANGE WAY HOW ADD PROCESS BECAUSE I DONT LIKE WAY I DO
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class Daemon:

@@ -1,3 +1,5 @@
+"""KesherTUI - A Textual User Interface for Monitoring Application Processes"""
+
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
@@ -56,7 +58,7 @@ class KesherTUI(App):
         )
         yield Footer(show_command_palette=False, compact=True)
 
-    def on_mount(self) -> None:
+    async def on_mount(self) -> None:
         self.title = "Kesher - Process Manager"
         self.sub_title = "Monitoring Application Processes"
 
@@ -69,26 +71,26 @@ class KesherTUI(App):
             "Technology",
             "Memory (MB)",
         )
-        self.load_processes()
+        await self.load_processes()
 
         resource_table = self.query_one("#resource-table", DataTable)
         resource_table.add_columns("Key", "Value")
 
-        self.load_resource()
+        await self.load_resource()
 
         self.set_interval(
             interval=2,
             callback=self.load_log,
             name="log_refresh",
         )
-
+        await self.load_resource()
         self.set_interval(
             interval=3,
             callback=self.load_resource,
             name="resource_refresh",
         )
 
-    def load_processes(self) -> None:
+    async def load_processes(self) -> None:
         """Load and display all processes in the table."""
         process_table = self.query_one("#process-table", DataTable)
         process_table.clear()

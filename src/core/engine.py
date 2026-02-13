@@ -1,5 +1,7 @@
 """This module defines the core engine for managing processes based on the environment configuration."""
 
+from util.console import show_message
+from util.const import MessageType
 from util.environment import Environment
 
 from .process import Process
@@ -8,11 +10,19 @@ from .process import Process
 def start(file_path: str, name=str | None, auto_start=False, venv=str | None) -> None:
     env = Environment(file_path, venv)
     if not env.file_path:
-        print("The specified file does not exist.")
+        show_message(
+            "The specified file does not exist.",
+            title="Error",
+            message_type=MessageType.ERROR,
+        )
         return
 
     if not env.venv_path:
-        print("The specified virtual environment does not exist.")
+        show_message(
+            "The specified virtual environment does not exist.",
+            title="Error",
+            message_type=MessageType.ERROR,
+        )
         return
 
     if env.api_type == "fastapi":
