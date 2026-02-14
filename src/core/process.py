@@ -12,6 +12,7 @@ from rich.table import Table
 from model.process import ProcessBase
 from util.console import show_message
 from util.const import MessageType
+from util.logger import Logger
 from util.state import State
 
 
@@ -70,6 +71,9 @@ class Process:
                     subprocess.check_output([commands[0], "--version"]).decode().strip()
                 ),
             )
+        )
+        Logger().register_log(
+            f"{datetime.now()}::{commands} name:{name} auto:{True if auto_start else False} tech:{technology}"
         )
         show_message(
             f"Process started with PID: {process.pid} and Name: {temp_name}",

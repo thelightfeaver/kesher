@@ -3,6 +3,14 @@
 from .console import show_message
 from .const import MessageType, StyleColor
 from .environment import Environment
+from .logger import Logger
 from .state import State
 
-__all__ = ["State", "Environment", "show_message", "MessageType", "StyleColor"]
+__all__ = [
+    "State",
+    "Environment",
+    "show_message",
+    "MessageType",
+    "StyleColor",
+    "Logger",
+]
