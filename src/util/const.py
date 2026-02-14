@@ -1,5 +1,19 @@
 import enum
 
+tecnology_extensions = (
+    ".py",
+    ".js",
+    ".java",
+    ".cpp",
+    ".c",
+    ".cs",
+    ".rb",
+    ".go",
+    ".php",
+    ".ts",
+)
+
+
 StyleColor = {
     "success": "green",
     "info": "blue",

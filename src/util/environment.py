@@ -1,6 +1,8 @@
 import os
 import sys
 
+from util.const import tecnology_extensions
+
 
 class Environment:
     ENVS = [
@@ -26,6 +28,9 @@ class Environment:
             return None
 
     def _determine_technology(self, file_path: str) -> str:
+        if not file_path.endswith(tecnology_extensions):
+            return None
+
         if os.path.exists(file_path):
             with open(file_path, "r") as f:
                 lines = f.read().lower()
